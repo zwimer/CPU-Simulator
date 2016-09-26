@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		9F5AD61D1D99B784004BB23A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9F5AD61C1D99B784004BB23A /* main.cpp */; };
 		9F5AD62C1D99D9C4004BB23A /* Process.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9F5AD62A1D99D9C4004BB23A /* Process.cpp */; };
+		9F5AD62F1D99E16A004BB23A /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9F5AD62D1D99E16A004BB23A /* Event.cpp */; };
+		9F5AD6321D99E1ED004BB23A /* Algo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9F5AD6301D99E1ED004BB23A /* Algo.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +30,10 @@
 		9F5AD61C1D99B784004BB23A /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		9F5AD62A1D99D9C4004BB23A /* Process.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Process.cpp; sourceTree = "<group>"; };
 		9F5AD62B1D99D9C4004BB23A /* Process.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Process.hpp; sourceTree = "<group>"; };
+		9F5AD62D1D99E16A004BB23A /* Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Event.cpp; sourceTree = "<group>"; };
+		9F5AD62E1D99E16A004BB23A /* Event.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Event.hpp; sourceTree = "<group>"; };
+		9F5AD6301D99E1ED004BB23A /* Algo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Algo.cpp; sourceTree = "<group>"; };
+		9F5AD6311D99E1ED004BB23A /* Algo.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Algo.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +69,10 @@
 				9F5AD61C1D99B784004BB23A /* main.cpp */,
 				9F5AD62A1D99D9C4004BB23A /* Process.cpp */,
 				9F5AD62B1D99D9C4004BB23A /* Process.hpp */,
+				9F5AD62D1D99E16A004BB23A /* Event.cpp */,
+				9F5AD62E1D99E16A004BB23A /* Event.hpp */,
+				9F5AD6301D99E1ED004BB23A /* Algo.cpp */,
+				9F5AD6311D99E1ED004BB23A /* Algo.hpp */,
 			);
 			path = Project1;
 			sourceTree = "<group>";
@@ -123,6 +133,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F5AD6321D99E1ED004BB23A /* Algo.cpp in Sources */,
+				9F5AD62F1D99E16A004BB23A /* Event.cpp in Sources */,
 				9F5AD61D1D99B784004BB23A /* main.cpp in Sources */,
 				9F5AD62C1D99D9C4004BB23A /* Process.cpp in Sources */,
 			);
@@ -243,6 +255,7 @@
 				9F5AD6221D99B784004BB23A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
