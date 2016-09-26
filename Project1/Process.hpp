@@ -1,20 +1,20 @@
 #ifndef Process_hpp
 #define Process_hpp
 
-#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+
 
 //A function used if an assert fails
-void Err(const char *s) {
-    fprintf(stderr, "Error: ");
-    perror(s);
-    exit(EXIT_FAILURE);
-}
+void Err(const char *s);
 
 //A function used to test assertions
-void Assert(bool b, const char *s) { if (!b) Err(s); }
+void Assert(bool b, const char *s);
 
 //Enum PStates
 enum PState { READY, RUNNING, BLOCKED, DONE };
+
+//#if 0
 
 class Process {
     
@@ -73,10 +73,5 @@ public:
     int getWaitTime(int current_time);
     
 };
-
-
-
-
-
 
 #endif /* Process_hpp */
