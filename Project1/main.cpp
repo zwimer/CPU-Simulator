@@ -12,6 +12,9 @@
  
  */
 
+//Global constants
+const int m = 1;
+const int t_cs = 8;
 
 /* This function takes in a pointer and determines whether or not it is valid */
 /* (if it is not NULL). It prints Msg to stdout if not, then exits the program */
@@ -125,6 +128,9 @@ void RunAlgo(const std::vector<Process*>& p, Algo& A) {
                            .append(" is using the CPU").c_str());
                     TodoList[i]->p->BeginCPUBurst(t); CPUInUse=TodoList[i]->p->getProcID();
             }
+            
+            //Since the process is done, delete the event
+            delete TodoList[i];
         }
         
         //Empty the list now that everything has been completed
@@ -152,16 +158,12 @@ int main(int argc, const char * argv[]) {
     
     //Sort the vector by arrival time
     std::sort(p.begin(), p.end(), compareProcesses);
-    
-    
-#if 0
 
-    RunAlgo(p, some Algo);
+#if 0
+    //Use example
+    RunAlgo(p, some_Algo);
     
 #endif
-    
-    for(int i = 0; i < p.size(); i++)
-        std::cout << p[i]->getProcID() << '\n';
     
     //Prevent memory leaks
     for(int i = 0; i < p.size(); i++) delete p[i];
