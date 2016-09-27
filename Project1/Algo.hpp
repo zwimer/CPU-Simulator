@@ -5,8 +5,10 @@
 
 #include <vector>
 
+
 extern const int m;
 extern const int t_cs;
+
 
 //An abstract class to be extend by the actualy algorithms
 class Algo {

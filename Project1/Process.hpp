@@ -11,10 +11,11 @@ void Err(const char *s);
 //A function used to test assertions
 void Assert(bool b, const char *s);
 
-//Enum PStates
-enum PState { READY, RUNNING, BLOCKED, DONE };
+//Enum PStates.
+//Any states that contain the name of another state in them,
+//are sub-categories of that origonal state meant for error checking
+enum PState { READY, READY_FOR_IO, RUNNING, BLOCKED, DONE };
 
-//#if 0
 
 class Process {
     
@@ -47,7 +48,7 @@ public:
     //Destructor
     ~Process();
     
-    //------------------------Change cState------------------------
+    //----------------------Change cState----------------------
     
     //Begin IO
     void BeginIO(int t);

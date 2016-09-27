@@ -1,0 +1,4 @@
+/Users/zwimer/School/OpSys/Project1/Project1/build/CMakeFiles/edit_cache.dir
+/Users/zwimer/School/OpSys/Project1/Project1/build/CMakeFiles/rebuild_cache.dir
+/Users/zwimer/School/OpSys/Project1/Project1/build/CMakeFiles/a.out.dir
+/Users/zwimer/School/OpSys/Project1/Project1/build/CMakeFiles/_MyLib.dir

@@ -6,11 +6,14 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
+
 
 /* Assumptions:
  Context switch time counts
  
  */
+
 
 //Global constants
 const int m = 1;
@@ -28,7 +31,7 @@ void memCheck(void *pnt, const char*  Msg) {
 //Returns true if the string contains
 //solely whitespace, false otherwise.
 inline const bool emptyString(std::string s) {
-    for (int i = 0; i < s.size(); i++)
+    for (unsigned int i = 0; i < s.size(); i++)
         if (!isspace(s[i])) return false;
     return true;
 }
@@ -54,7 +57,7 @@ void readIn(const std::string& FileName, std::vector<Process*>& p) {
         else if (emptyString(line)) continue;
         
         //Replace each '|' with ' ' in line
-        for(int i = 0; i < line.size(); i++)
+        for(unsigned int i = 0; i < line.size(); i++)
             if (line[i] == '|') line[i] = ' ';
         
         //Make a string stream from this line
@@ -76,17 +79,19 @@ bool compareProcesses( Process*& a,  Process*& b)
 void RunAlgo(const std::vector<Process*>& p, Algo& A) {
     
     //t is an int representing time
+    int t=0;
+    
     //InputIndex is an index for the vector of processes
-    int t=0,InputIndex=0;
+    unsigned int InputIndex=0;
     
     //Create the event list
     std::vector<Event*> TodoList;
     
     //Repeat while the alorithm is not done
-    while ((A.nextNotify(t) != -1) || (InputIndex != p.size())) {
+    while (t != -1) {
         
         //For each processes that is starting now
-        for(int i = InputIndex; i < p.size(); i++)
+        for(unsigned int i = InputIndex; i < p.size(); i++)
             if (t==p[i]->getTimeArrived()) {
                 
                 //Tell the Algorithm, and increment InputIndex
@@ -100,7 +105,7 @@ void RunAlgo(const std::vector<Process*>& p, Algo& A) {
         char CPUInUse = 0;
         
         //For each event that must be done, do it
-        for(int i = 0; i < TodoList.size(); i++) {
+        for(unsigned int i = 0; i < TodoList.size(); i++) {
         
             switch (TodoList[i]->Type) {
                     
@@ -140,15 +145,81 @@ void RunAlgo(const std::vector<Process*>& p, Algo& A) {
         //This will either be when the algorithim determines
         //that something important will happen, or when a new
         //process arrives which the algorithm needs to know about
-        int tmp = A.nextNotify(t);
-        if (InputIndex==p.size()) t = tmp;
-        else t = tmp<p[InputIndex]->getTimeArrived()
-            ? tmp-t:p[InputIndex]->getTimeArrived()-t;
+        int Option1 = A.nextNotify(t);
+        if (InputIndex!=p.size()) {
+            
+            //Option2 is the time the next process arrives.
+            int Option2 = p[InputIndex]->getTimeArrived();
+            Assert(Option2>=0, "Proccess arrived later");
+            
+            //Pick the smallest positive time
+            if (Option1 == -1) t = Option2;
+            else t = Option1<Option2?Option1-t:Option2-t;
+        }
+        
+        //If InputIndex==p.size(), no new processes will arrive
+        //If Option1 == -1, and, InputIndex==p.size(), the simulation is over
+        else t = Option1;
     }
 }
 
+
+
+//A function used for testing
+int ___test___() {
+
+	//Name space for easy printing
+    using namespace std;
+    
+	//Disable stdout buffer
+    setvbuf(stdout, NULL, _IONBF, 0);
+    
+	//Our pretend process
+    const char pid = 'A';
+    const int TA = 10, CPU = 50, N = 3, IO = 100;
+    
+	//Time
+	int t=TA;
+    
+    //Create process
+    Process p(pid, TA, CPU, N, IO);
+
+	//Repeat for each burst needed
+	for(int k = 0; k< N; k++) {
+
+		//Begin CPU Burst
+		p.BeginCPUBurst(t); t+=13;
+		
+		//Pause 13 seconds in
+		p.PauseCPUBurst(t); t+=20;
+		
+		//Resume 20 seconds later
+		p.BeginCPUBurst(t); t+=CPU-13;
+		
+		//Finish the CPU burst
+		p.FinishCPUBurst(t);
+		
+		//If IO is needed, do it
+		if (k+1 != N) { 
+
+			//Start IO
+			p.BeginIO(t); t += IO;
+
+			//Finish IO
+			p.FinishIO(t);
+		}
+	}
+
+    //To exit the program
+	return 1;
+}
+
+
+//Main function
 int main(int argc, const char * argv[]) {
 
+	//DELETE. Just here for testing now
+    if ( ___test___()) return 0;
     
     //The vector that stores the processes to run
     std::vector<Process*> p;
@@ -166,7 +237,7 @@ int main(int argc, const char * argv[]) {
 #endif
     
     //Prevent memory leaks
-    for(int i = 0; i < p.size(); i++) delete p[i];
+    for(unsigned int i = 0; i < p.size(); i++) delete p[i];
  
     return EXIT_SUCCESS;
 }
