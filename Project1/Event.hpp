@@ -3,7 +3,7 @@
 
 #include "Process.hpp"
 
-enum PEvent { START_BURST, FINISH_BURST, START_IO, FINISH_IO };
+enum PEvent { START_IO, FINISH_IO, START_BURST, PAUSE_BURST, FINISH_BURST };
 
 class Event {
     
@@ -11,7 +11,7 @@ public:
     Event(const enum PEvent a, Process *const b, int c);
     
     //Representation
-    const enum PEvent TypeOfEvent;
+    const enum PEvent Type;
     Process *const p;
     const int when;
 };

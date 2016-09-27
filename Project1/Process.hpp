@@ -22,7 +22,7 @@ class Process {
 private:
     
     //Constants
-    const int ProcId;
+    const char ProcId;
     const int IOTime;
     const int numBursts;
     const int TimeArrived;
@@ -34,43 +34,51 @@ private:
     //The current state
     enum PState cState;
     
+    //Error checking ints
+    int TimeofIOBurst;
+    int TimeofCPUBurst;
+    int Time_In_CPUBurst;
+    
 public:
     
     //Constructor
-    Process(int a, int b, int c, int d, int e);
+    Process(char a, int b, int c, int d, int e);
     
     //Destructor
     ~Process();
     
     //------------------------Change cState------------------------
     
-    //Begin running
-    void BeginCPUBurst();
-    
-    //Returns the number of CPU bursts done
-    int FinishCPUBurst();
-    
     //Begin IO
-    void BeginIO();
+    void BeginIO(int t);
     
     //Finish IO
-    void FinishIO();
+    void FinishIO(int t);
+    
+    //Begin CPU burst
+    void BeginCPUBurst(int t);
+    
+    //Context switch out of CPU burst
+    void PauseCPUBurst(int t);
+    
+    //Finish CPU burst
+    void FinishCPUBurst(int t);
     
     //------------------------Getters------------------------
     
-    int getProcID();
-    int getIOTIME();
-    int getTimeArrived();
-    int getCPUBurstTime();
-    bool getDone();
+    int getProcID() const;
+    int getIOTIME() const;
+    int getTimeArrived() const;
+    int getCPUBurstTime() const;
+    bool getDone() const;
     
     //------------------------Get times------------------------
     
     //Return turn around time
-    int getTurnAroundTime(int current_time);
+    int getTurnAroundTime(int current_time) const;
     
     //Return get wait time
-    int getWaitTime(int current_time);
+    int getWaitTime(int current_time) const;
     
 };
 
