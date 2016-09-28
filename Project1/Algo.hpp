@@ -26,6 +26,8 @@ protected:
     const uint m;
     const uint t_cs;
     
+    //The name of the algorithm
+    //Should be the same as the class name
     const char* AlgoName;
     
 public:
