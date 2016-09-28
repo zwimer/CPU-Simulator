@@ -10,6 +10,12 @@ CMakeFiles/_MyLib.dir/Event.cpp.o
  /Users/zwimer/School/OpSys/Project1/Project1/Event.cpp
  /Users/zwimer/School/OpSys/Project1/Project1/Event.hpp
  /Users/zwimer/School/OpSys/Project1/Project1/Process.hpp
+CMakeFiles/_MyLib.dir/FCFS.cpp.o
+ /Users/zwimer/School/OpSys/Project1/Project1/Algo.hpp
+ /Users/zwimer/School/OpSys/Project1/Project1/Event.hpp
+ /Users/zwimer/School/OpSys/Project1/Project1/FCFS.cpp
+ /Users/zwimer/School/OpSys/Project1/Project1/FCFS.hpp
+ /Users/zwimer/School/OpSys/Project1/Project1/Process.hpp
 CMakeFiles/_MyLib.dir/Process.cpp.o
  /Users/zwimer/School/OpSys/Project1/Project1/Process.cpp
  /Users/zwimer/School/OpSys/Project1/Project1/Process.hpp

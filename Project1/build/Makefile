@@ -190,6 +190,33 @@ Event.cpp.s:
 	$(MAKE) -f CMakeFiles/_MyLib.dir/build.make CMakeFiles/_MyLib.dir/Event.cpp.s
 .PHONY : Event.cpp.s
 
+FCFS.o: FCFS.cpp.o
+
+.PHONY : FCFS.o
+
+# target to build an object file
+FCFS.cpp.o:
+	$(MAKE) -f CMakeFiles/_MyLib.dir/build.make CMakeFiles/_MyLib.dir/FCFS.cpp.o
+.PHONY : FCFS.cpp.o
+
+FCFS.i: FCFS.cpp.i
+
+.PHONY : FCFS.i
+
+# target to preprocess a source file
+FCFS.cpp.i:
+	$(MAKE) -f CMakeFiles/_MyLib.dir/build.make CMakeFiles/_MyLib.dir/FCFS.cpp.i
+.PHONY : FCFS.cpp.i
+
+FCFS.s: FCFS.cpp.s
+
+.PHONY : FCFS.s
+
+# target to generate assembly for a file
+FCFS.cpp.s:
+	$(MAKE) -f CMakeFiles/_MyLib.dir/build.make CMakeFiles/_MyLib.dir/FCFS.cpp.s
+.PHONY : FCFS.cpp.s
+
 Process.o: Process.cpp.o
 
 .PHONY : Process.o
@@ -260,6 +287,9 @@ help:
 	@echo "... Event.o"
 	@echo "... Event.i"
 	@echo "... Event.s"
+	@echo "... FCFS.o"
+	@echo "... FCFS.i"
+	@echo "... FCFS.s"
 	@echo "... Process.o"
 	@echo "... Process.i"
 	@echo "... Process.s"

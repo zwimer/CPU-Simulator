@@ -2,6 +2,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/_MyLib.dir/Algo.cpp.o"
   "CMakeFiles/_MyLib.dir/Event.cpp.o"
   "CMakeFiles/_MyLib.dir/Process.cpp.o"
+  "CMakeFiles/_MyLib.dir/FCFS.cpp.o"
   "lib_MyLib.pdb"
   "lib_MyLib.dylib"
 )

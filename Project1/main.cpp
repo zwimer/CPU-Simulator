@@ -11,12 +11,6 @@
 #include <functional>
 
 
-/* Assumptions:
- Context switch time counts
- 
- */
-
-
 //Global constants
 const uint m = 1;
 const uint t_cs = 8;
@@ -89,7 +83,7 @@ void RunAlgo(PQueue& ToArrive, Algo& A) {
         while (ToArrive.size())
             
             //For each processes that is starting now
-            if ( ToArrive.top()->getTimeArrived() == t ) {
+            if ( ToArrive.top()->getTimeArrived() == (uint)t ) {
                 
                 //Mark IO completed if necessary
                 if (ToArrive.top()->getIODone(t))

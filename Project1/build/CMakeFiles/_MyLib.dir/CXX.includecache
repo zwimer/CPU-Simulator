@@ -24,6 +24,16 @@ Event.hpp
 Process.hpp
 /Users/zwimer/School/OpSys/Project1/Project1/Process.hpp
 
+/Users/zwimer/School/OpSys/Project1/Project1/FCFS.cpp
+FCFS.hpp
+/Users/zwimer/School/OpSys/Project1/Project1/FCFS.hpp
+
+/Users/zwimer/School/OpSys/Project1/Project1/FCFS.hpp
+Algo.hpp
+/Users/zwimer/School/OpSys/Project1/Project1/Algo.hpp
+list
+-
+
 /Users/zwimer/School/OpSys/Project1/Project1/Process.cpp
 Process.hpp
 /Users/zwimer/School/OpSys/Project1/Project1/Process.hpp

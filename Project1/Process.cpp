@@ -81,7 +81,7 @@ void Process::FinishCPUBurst(uint t) {
 //---------------------------Getters---------------------------
 
 bool Process::getDone() const { return (cState == DONE); }
-uint Process::getProcID() const { return ProcId; }
+char Process::getProcID() const { return ProcId; }
 uint Process::getIOTIME() const { return IOTime; }
 uint Process::getCPUBurstTime() const { return CPUBurstTime; }
 uint Process::getIODone(uint t) const {

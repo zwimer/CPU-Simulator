@@ -16,6 +16,12 @@ vector
 Process.hpp
 /Users/zwimer/School/OpSys/Project1/Project1/Process.hpp
 
+/Users/zwimer/School/OpSys/Project1/Project1/FCFS.hpp
+Algo.hpp
+/Users/zwimer/School/OpSys/Project1/Project1/Algo.hpp
+list
+-
+
 /Users/zwimer/School/OpSys/Project1/Project1/Process.hpp
 stdio.h
 -
@@ -23,12 +29,10 @@ stdlib.h
 -
 
 /Users/zwimer/School/OpSys/Project1/Project1/main.cpp
-Algo.hpp
-/Users/zwimer/School/OpSys/Project1/Project1/Algo.hpp
-Event.hpp
-/Users/zwimer/School/OpSys/Project1/Project1/Event.hpp
-Process.hpp
-/Users/zwimer/School/OpSys/Project1/Project1/Process.hpp
+FCFS.hpp
+/Users/zwimer/School/OpSys/Project1/Project1/FCFS.hpp
+queue
+-
 string
 -
 fstream
@@ -38,5 +42,7 @@ sstream
 iostream
 -
 algorithm
+-
+functional
 -
 

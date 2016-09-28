@@ -10,6 +10,12 @@ CMakeFiles/_MyLib.dir/Event.cpp.o: ../Event.cpp
 CMakeFiles/_MyLib.dir/Event.cpp.o: ../Event.hpp
 CMakeFiles/_MyLib.dir/Event.cpp.o: ../Process.hpp
 
+CMakeFiles/_MyLib.dir/FCFS.cpp.o: ../Algo.hpp
+CMakeFiles/_MyLib.dir/FCFS.cpp.o: ../Event.hpp
+CMakeFiles/_MyLib.dir/FCFS.cpp.o: ../FCFS.cpp
+CMakeFiles/_MyLib.dir/FCFS.cpp.o: ../FCFS.hpp
+CMakeFiles/_MyLib.dir/FCFS.cpp.o: ../Process.hpp
+
 CMakeFiles/_MyLib.dir/Process.cpp.o: ../Process.cpp
 CMakeFiles/_MyLib.dir/Process.cpp.o: ../Process.hpp
 

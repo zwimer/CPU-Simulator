@@ -71,7 +71,7 @@ public:
     //------------------------Getters------------------------
     
     bool getDone() const;
-    uint getProcID() const;
+    char getProcID() const;
     uint getIOTIME() const;
     uint getIODone(uint) const;
     uint getCPUBurstTime() const;

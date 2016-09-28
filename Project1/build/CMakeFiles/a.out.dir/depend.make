@@ -3,6 +3,7 @@
 
 CMakeFiles/a.out.dir/main.cpp.o: ../Algo.hpp
 CMakeFiles/a.out.dir/main.cpp.o: ../Event.hpp
+CMakeFiles/a.out.dir/main.cpp.o: ../FCFS.hpp
 CMakeFiles/a.out.dir/main.cpp.o: ../Process.hpp
 CMakeFiles/a.out.dir/main.cpp.o: ../main.cpp
 
