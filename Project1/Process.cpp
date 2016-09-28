@@ -1,5 +1,7 @@
+//My Includes
 #include "Process.hpp"
 
+//System includes
 #include <stdlib.h>
 #include <iostream>
 
@@ -23,7 +25,7 @@ void Assert(bool b, const char *s) { if (!b) Err(s); }
 //---------------------Process Constructors---------------------
 
 //Constructor
-Process::Process(char a, int b, int c, int d, int e) : ProcId(a),
+Process::Process(char a, uint b, uint c, uint d, uint e) : ProcId(a),
 TimeArrived(b), CPUBurstTime(c), numBursts(d), IOTime(e) {
     
     //The CPU has yet to start this process
@@ -40,36 +42,37 @@ Process::~Process() { Assert(getDone(), "Non-done process destructed"); }
 //-------------------------Change cState-------------------------
 
 //Begin IO and record the time
-void Process::BeginIO(int t) {
+void Process::BeginIO(uint t) {
     Assert(cState==READY_FOR_IO, "Can't begin IO");
     TimeofIOBurst=t; cState=BLOCKED;
 }
 
 //Finish IO
-void Process::FinishIO(int t) {
+void Process::FinishIO(uint t) {
     Assert(cState==BLOCKED, "Process not blocked");
     Assert(t==TimeofIOBurst+IOTime, "IO finished at the wrong time");
     cState=READY;
 }
 
 //Begin running and record the time
-void Process::BeginCPUBurst(int t) {
+void Process::BeginCPUBurst(uint t) {
     Assert(cState==READY, "Process was not queued!");
     TimeofCPUBurst = t; cState = RUNNING;
 }
 
 //Context switch out of CPU burst
-void Process::PauseCPUBurst(int t) {
+void Process::PauseCPUBurst(uint t) {
     Assert(cState == RUNNING, "Process never ran!");
     Assert(t<TimeofCPUBurst+CPUBurstTime, "CPU paused when it should have ended");
+    Assert(t>=TimeofCPUBurst, "Error, CPU elapsed time > t");
     Time_In_CPUBurst+=t-TimeofCPUBurst;
     cState=READY;
 }
 
 //Finish CPU burst
-void Process::FinishCPUBurst(int t) {
+void Process::FinishCPUBurst(uint t) {
     Assert(cState == RUNNING, "Process never ran!");
-    Assert(t==CPUBurstTime+TimeofCPUBurst-Time_In_CPUBurst, "CPU finished at the wrong time");
+    Assert(t+Time_In_CPUBurst==CPUBurstTime+TimeofCPUBurst, "CPU finished at the wrong time");
     if (++NumberCPUDone==numBursts) cState=DONE; else cState=READY_FOR_IO;
     Time_In_CPUBurst=0;
 }
@@ -77,17 +80,17 @@ void Process::FinishCPUBurst(int t) {
 
 //---------------------------Getters---------------------------
 
-int Process::getProcID() const { return ProcId; }
-int Process::getIOTIME() const { return IOTime; }
-int Process::getTimeArrived() const { return TimeArrived; }
-int Process::getCPUBurstTime() const { return CPUBurstTime; }
+uint Process::getProcID() const { return ProcId; }
+uint Process::getIOTIME() const { return IOTime; }
+uint Process::getTimeArrived() const { return TimeArrived; }
+uint Process::getCPUBurstTime() const { return CPUBurstTime; }
 bool Process::getDone() const { return (cState == DONE); }
 
 
 //--------------------------Get times--------------------------
 
 //Return turn around time
-int Process::getTurnAroundTime(int current_time) const {
+uint Process::getTurnAroundTime(uint current_time) const {
     
     //Assert that the process is dead
     Assert(getDone(),
@@ -102,19 +105,20 @@ int Process::getTurnAroundTime(int current_time) const {
 }
 
 //Return get wait time
-int Process::getWaitTime(int current_time) const {
+uint Process::getWaitTime(uint current_time) const {
     
     //Error checking done in getTurnAroundTime
-    int ret = getTurnAroundTime(current_time);
+    uint ret = getTurnAroundTime(current_time);
+    
+    //Make sure the math makes sense
+    Assert(ret >= CPUBurstTime*numBursts+IOTime*(numBursts-1),
+           "Error, can't have negative wait times");
     
     //Subtract CPU burst time
     ret -= CPUBurstTime*numBursts;
     
     //Subtract IOTime
     ret -= IOTime*(numBursts-1);
-    
-    //Make sure the math makes sense
-    Assert(ret >= 0, "Error, cant have negative wait times");
     
     return ret;
 }

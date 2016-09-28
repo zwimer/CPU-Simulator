@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//Helpful typedef
+typedef unsigned int uint;
 
 //A function used if an assert fails
 void Err(const char *s);
@@ -11,12 +13,13 @@ void Err(const char *s);
 //A function used to test assertions
 void Assert(bool b, const char *s);
 
+
 //Enum PStates.
 //Any states that contain the name of another state in them,
 //are sub-categories of that origonal state meant for error checking
 enum PState { READY, READY_FOR_IO, RUNNING, BLOCKED, DONE };
 
-
+//A class that represents a process
 class Process {
     
     //Representation
@@ -24,26 +27,26 @@ private:
     
     //Constants
     const char ProcId;
-    const int IOTime;
-    const int numBursts;
-    const int TimeArrived;
-    const int CPUBurstTime;
+    const uint IOTime;
+    const uint numBursts;
+    const uint TimeArrived;
+    const uint CPUBurstTime;
     
     //The number of CPU bursts done
-    int NumberCPUDone;
+    uint NumberCPUDone;
     
     //The current state
     enum PState cState;
     
     //Error checking ints
-    int TimeofIOBurst;
-    int TimeofCPUBurst;
-    int Time_In_CPUBurst;
+    uint TimeofIOBurst;
+    uint TimeofCPUBurst;
+    uint Time_In_CPUBurst;
     
 public:
     
     //Constructor
-    Process(char a, int b, int c, int d, int e);
+    Process(char a, uint b, uint c, uint d, uint e);
     
     //Destructor
     ~Process();
@@ -51,35 +54,35 @@ public:
     //----------------------Change cState----------------------
     
     //Begin IO
-    void BeginIO(int t);
+    void BeginIO(uint t);
     
     //Finish IO
-    void FinishIO(int t);
+    void FinishIO(uint t);
     
     //Begin CPU burst
-    void BeginCPUBurst(int t);
+    void BeginCPUBurst(uint t);
     
     //Context switch out of CPU burst
-    void PauseCPUBurst(int t);
+    void PauseCPUBurst(uint t);
     
     //Finish CPU burst
-    void FinishCPUBurst(int t);
+    void FinishCPUBurst(uint t);
     
     //------------------------Getters------------------------
     
-    int getProcID() const;
-    int getIOTIME() const;
-    int getTimeArrived() const;
-    int getCPUBurstTime() const;
+    uint getProcID() const;
+    uint getIOTIME() const;
+    uint getTimeArrived() const;
+    uint getCPUBurstTime() const;
     bool getDone() const;
     
     //------------------------Get times------------------------
     
     //Return turn around time
-    int getTurnAroundTime(int current_time) const;
+    uint getTurnAroundTime(uint current_time) const;
     
     //Return get wait time
-    int getWaitTime(int current_time) const;
+    uint getWaitTime(uint current_time) const;
     
 };
 
