@@ -12,12 +12,13 @@ enum PEvent {   START_IO, FINISH_IO, START_BURST,
 class Event {
     
 public:
-    Event(const enum PEvent a, Process *const b, uint c);
+    
+    //Constructor
+    Event(const enum PEvent a, Process *const b);
     
     //Representation
     const enum PEvent Type;
     Process *const p;
-    const uint when;
 };
 
 #endif /* Event_hpp */

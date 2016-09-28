@@ -77,7 +77,6 @@ void Process::FinishCPUBurst(uint t) {
     Time_In_CPUBurst=0;
 }
 
-
 //---------------------------Getters---------------------------
 
 uint Process::getProcID() const { return ProcId; }
@@ -86,6 +85,12 @@ uint Process::getTimeArrived() const { return TimeArrived; }
 uint Process::getCPUBurstTime() const { return CPUBurstTime; }
 bool Process::getDone() const { return (cState == DONE); }
 
+//Returns the estimated time this process will exit the CPU
+//This function assume no preemption! It is the processes guess
+uint Process::getFinishCPUTime(uint t) const {
+    Assert(cState==RUNNING, "Process is not in the CPU");
+    return t+CPUBurstTime-Time_In_CPUBurst;
+}
 
 //--------------------------Get times--------------------------
 

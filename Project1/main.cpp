@@ -1,7 +1,5 @@
 //My includes
-#include "Algo.hpp"
-#include "Event.hpp"
-#include "Process.hpp"
+#include "FCFS.hpp"
 
 //System includes
 #include <string>
@@ -168,7 +166,7 @@ int main(int argc, const char * argv[]) {
     
     //Sort the vector by arrival time
     std::sort(p.begin(), p.end(), compareProcesses);
-
+    
 #if 0
     //Use example
     RunAlgo(p, some_Algo);

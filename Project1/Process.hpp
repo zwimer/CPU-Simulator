@@ -70,11 +70,15 @@ public:
     
     //------------------------Getters------------------------
     
+    bool getDone() const;
     uint getProcID() const;
     uint getIOTIME() const;
     uint getTimeArrived() const;
     uint getCPUBurstTime() const;
-    bool getDone() const;
+    
+    //Returns the estimated time this process will exit the CPU
+    //This function assume no preemption! It is the processes guess
+    uint getFinishCPUTime(uint t) const;
     
     //------------------------Get times------------------------
     
