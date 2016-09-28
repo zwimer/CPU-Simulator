@@ -38,7 +38,7 @@ private:
     //The current state
     enum PState cState;
     
-    //Error checking ints
+    //Variabels meant to timekeep
     uint TimeofIOBurst;
     uint TimeofCPUBurst;
     uint Time_In_CPUBurst;
@@ -73,12 +73,16 @@ public:
     bool getDone() const;
     uint getProcID() const;
     uint getIOTIME() const;
-    uint getTimeArrived() const;
+    uint getIODone(uint) const;
     uint getCPUBurstTime() const;
     
     //Returns the estimated time this process will exit the CPU
     //This function assume no preemption! It is the processes guess
-    uint getFinishCPUTime(uint t) const;
+    uint getFinishCPUTime() const;
+    
+    //Returns the time this process re-arrives
+    //This returns TimeArried if IO has never been run
+    uint getTimeArrived() const;
     
     //------------------------Get times------------------------
     
@@ -89,5 +93,9 @@ public:
     uint getWaitTime(uint current_time) const;
     
 };
+
+//A class whose sole purpose is to compare Processes by TimeArrived
+class ProcessCompare
+{ public: bool operator() (const Process* a, const Process* b); };
 
 #endif /* Process_hpp */

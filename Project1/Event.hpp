@@ -5,8 +5,7 @@
 #include "Process.hpp"
 
 //An enum to allow different events to have meaning
-enum PEvent {   START_IO, FINISH_IO, START_BURST,
-                PAUSE_BURST, FINISH_BURST };
+enum PEvent { START_BURST, PAUSE_BURST, FINISH_BURST };
 
 //A class that represents an interesting event
 class Event {

@@ -19,7 +19,7 @@ private:
 public:
     
     //Constructor
-    FCFS(const char *a, uint b, uint c);
+    FCFS(const char* a, uint b, uint c);
     
     //Returns the amount of time until you want
     void addProcess(uint t, Process *p);

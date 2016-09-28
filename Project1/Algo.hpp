@@ -39,6 +39,8 @@ public:
     //Return's -1 is done, otherwise returns a positive number
     virtual int nextNotify(uint t) const=0;
     
+    //This function will ONLY be called once per any t
+    //It is allowed to modify it's internal state if it wishes
     //Returns a list of events the computer must do by putting it in V
     virtual void getTodoList(uint t, std::vector<Event*>& V)=0;
     

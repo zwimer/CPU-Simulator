@@ -73,23 +73,34 @@ void Process::PauseCPUBurst(uint t) {
 void Process::FinishCPUBurst(uint t) {
     Assert(cState == RUNNING, "Process never ran!");
     Assert(t+Time_In_CPUBurst==CPUBurstTime+TimeofCPUBurst, "CPU finished at the wrong time");
-    if (++NumberCPUDone==numBursts) cState=DONE; else cState=READY_FOR_IO;
+    if (++NumberCPUDone==numBursts) cState=DONE;
+    else cState=READY_FOR_IO;
     Time_In_CPUBurst=0;
 }
 
 //---------------------------Getters---------------------------
 
+bool Process::getDone() const { return (cState == DONE); }
 uint Process::getProcID() const { return ProcId; }
 uint Process::getIOTIME() const { return IOTime; }
-uint Process::getTimeArrived() const { return TimeArrived; }
 uint Process::getCPUBurstTime() const { return CPUBurstTime; }
-bool Process::getDone() const { return (cState == DONE); }
+uint Process::getIODone(uint t) const {
+    return cState==BLOCKED && t==TimeofIOBurst+IOTime;
+}
 
 //Returns the estimated time this process will exit the CPU
 //This function assume no preemption! It is the processes guess
-uint Process::getFinishCPUTime(uint t) const {
+uint Process::getFinishCPUTime() const {
     Assert(cState==RUNNING, "Process is not in the CPU");
-    return t+CPUBurstTime-Time_In_CPUBurst;
+    return CPUBurstTime+TimeofCPUBurst-Time_In_CPUBurst;
+}
+
+//Returns the time this process will finish IO
+uint Process::getTimeArrived() const {
+    Assert(cState!=DONE, "Process is not in arrival queue");
+    Assert(cState!=RUNNING, "Process is not in arrival queue");
+    if (NumberCPUDone) return TimeofIOBurst+IOTime;
+    return TimeArrived;
 }
 
 //--------------------------Get times--------------------------
@@ -127,3 +138,7 @@ uint Process::getWaitTime(uint current_time) const {
     
     return ret;
 }
+
+//Returns true if a > b
+bool ProcessCompare::operator() (const Process* a, const Process* b)
+{return a->getTimeArrived() > b->getTimeArrived();}

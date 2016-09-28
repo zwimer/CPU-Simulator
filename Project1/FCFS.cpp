@@ -16,25 +16,30 @@ void FCFS::addProcess(uint c_time, Process *p) { Queued.push_back(p); }
 //Return's -1 is done, otherwise returns a positive number
 int FCFS::nextNotify(uint t) const {
     if (!Queued.size()) return -1;
-    return (*Queued.begin())->getFinishCPUTime(t);
+    return (*Queued.begin())->getFinishCPUTime();
 }
 
 //Returns a list of events the computer must do by putting it in V
 void FCFS::getTodoList(uint t, std::vector<Event*>& V) {
 
-    if (!Queued.size()) {}
-    
-    else if (!ProcessRunning) {
+    //If there is nothing to do, do nothing
+    if (!Queued.size()) return;
+
+    //If no process is running and a new one can start, do so
+    else if (!ProcessRunning && (*Queued.begin())->getTimeArrived()==t) {
         V.push_back(new Event(START_BURST, *Queued.begin()));
         ProcessRunning = true;
     }
     
-    else if ((*Queued.begin())->getFinishCPUTime(t)==t) {
+    //If a process is over
+    else if ((*Queued.begin())->getFinishCPUTime()==t) {
         V.push_back(new Event(FINISH_BURST, *Queued.begin()));
-        V.pop_back();
+        Queued.pop_front();
         
-        if (!Queued.size()) {}
-        
+        //If a new process is ready to start
+        if (Queued.size())
+            V.push_back(new Event(START_BURST, *Queued.begin()));
+        else ProcessRunning = false;
     }
     
 }
