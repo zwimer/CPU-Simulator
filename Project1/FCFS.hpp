@@ -32,7 +32,6 @@ public:
     //Returns a list of events the computer must do by putting it in V
     void getTodoList(uint t, std::vector<Event*>& V);
     
-    
     //Functions used to get the Algo's stats
     double getAvgCPUTime();
     double getAvgWaitTime();

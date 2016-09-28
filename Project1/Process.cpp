@@ -64,7 +64,7 @@ void Process::BeginCPUBurst(uint t) {
 void Process::PauseCPUBurst(uint t) {
     Assert(cState == RUNNING, "Process never ran!");
     Assert(t<TimeofCPUBurst+CPUBurstTime, "CPU paused when it should have ended");
-    Assert(t>=TimeofCPUBurst, "Error, CPU elapsed time > t");
+    Assert(t>=TimeofCPUBurst, "Error, t < Time of this CPU burst");
     Time_In_CPUBurst+=t-TimeofCPUBurst;
     cState=READY;
 }
@@ -72,7 +72,7 @@ void Process::PauseCPUBurst(uint t) {
 //Finish CPU burst
 void Process::FinishCPUBurst(uint t) {
     Assert(cState == RUNNING, "Process never ran!");
-    Assert(t+Time_In_CPUBurst==CPUBurstTime+TimeofCPUBurst, "CPU finished at the wrong time");
+    Assert(t+Time_In_CPUBurst==TimeofCPUBurst+CPUBurstTime, "CPU finished at the wrong time");
     if (++NumberCPUDone==numBursts) cState=DONE;
     else cState=READY_FOR_IO;
     Time_In_CPUBurst=0;

@@ -1,10 +1,6 @@
 //My includes
 #include "FCFS.hpp"
 
-
-
-  
-
 //Constructor
 FCFS::FCFS(const char *a, uint b, uint c) : Algo(a,b,c) { ProcessRunning = false; }
 
@@ -33,12 +29,13 @@ void FCFS::getTodoList(uint t, std::vector<Event*>& V) {
     
     //If a process is over
     else if ((*Queued.begin())->getFinishCPUTime()==t) {
+        
+        //End it
         V.push_back(new Event(FINISH_BURST, *Queued.begin()));
         Queued.pop_front();
         
-        //If a new process is ready to start
-        if (Queued.size())
-            V.push_back(new Event(START_BURST, *Queued.begin()));
+        //If a new process is ready to start, start it
+        if (Queued.size()) V.push_back(new Event(START_BURST, *Queued.begin()));
         else ProcessRunning = false;
     }
     
@@ -52,6 +49,11 @@ double FCFS::getAvgCPUTime(){return 0;}
 double FCFS::getAvgWaitTime(){return 0;}
 double FCFS::getAvgTurnAroundTime(){return 0;}
 uint FCFS::getNumContextSwitches(){return 0;}
-uint FCFS::getTotalNumPreemptions(){return 0;}
 
 
+
+
+
+
+//This algorithm does not preempt
+uint FCFS::getTotalNumPreemptions(){ return 0; }

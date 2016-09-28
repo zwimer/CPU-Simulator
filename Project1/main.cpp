@@ -22,7 +22,8 @@ const uint m = 1;
 const uint t_cs = 8;
 
 //Helpful typedef
-typedef std::priority_queue<Process*, std::vector<Process*>, ProcessCompare> PQueue;
+typedef std::priority_queue<Process*,
+std::vector<Process*>, ProcessCompare> PQueue;
 
 //Returns true if the string contains solely
 //whitespace, false otherwise (including empty)
@@ -112,7 +113,8 @@ void RunAlgo(PQueue& ToArrive, Algo& A) {
                     
                 //If we need to have a process finish using the CPU, do so
                 case FINISH_BURST:
-                    Assert(CPUInUse==TodoList[i]->p->getProcID(), "This process was not in the CPU");
+                    Assert(CPUInUse==TodoList[i]->p->getProcID(),
+                           "This process was not in the CPU");
                     TodoList[i]->p->FinishCPUBurst(t); CPUInUse=0;
                     
                     //If the process needs to start IO, do so
