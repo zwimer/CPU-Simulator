@@ -11,6 +11,8 @@
 extern const uint m;
 extern const uint t_cs;
 
+//Helpful typdef
+typedef std::vector<Event*> EventList;
 
 //An abstract class to be extend by the actualy algorithms
 class Algo {
@@ -42,7 +44,7 @@ public:
     //This function will ONLY be called once per any t
     //It is allowed to modify it's internal state if it wishes
     //Returns a list of events the computer must do by putting it in V
-    virtual void getTodoList(uint t, std::vector<Event*>& V)=0;
+    virtual void getTodoList(uint t, EventList& V)=0;
     
     //A function used to print this algorithm's stats
     void printInfo();

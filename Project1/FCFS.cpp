@@ -42,8 +42,7 @@ void FCFS::getTodoList(uint t, std::vector<Event*>& V) {
 }
 
 
-
-
+//TODO:
 //Functions used to get the Algo's stats
 double FCFS::getAvgCPUTime(){return 0;}
 double FCFS::getAvgWaitTime(){return 0;}
