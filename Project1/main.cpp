@@ -3,12 +3,10 @@
 #include "FCFS.hpp"
 
 //System includes
-#include <queue>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <algorithm>
 #include <functional>
 
 //Global constants
@@ -17,9 +15,6 @@ const uint t_cs = 8;
 
 #define DEBUG_MODE
 
-//Helpful typedef
-typedef std::priority_queue<Process*,
-std::vector<Process*>, ProcessCompare> PQueue;
 
 #ifdef DEBUG_MODE
     //Number of context swtiches
@@ -38,7 +33,7 @@ inline const bool emptyString(std::string s) {
 }
 
 //Reads the file and creates a vector of processes read in
-void readIn(const std::string& FileName, PQueue& p, PList& p1) {
+void readIn(const std::string& FileName, PList& p1) {
     
     //Values on each relevant line
     char a; uint b,c,d,e;
@@ -68,8 +63,7 @@ void readIn(const std::string& FileName, PQueue& p, PList& p1) {
         nextLine >> a >> b >> c >> d >> e;
         
         //Add a new process
-        Process *newP = new Process(a,b,c,d,e);
-        p.push(newP); p1.add(newP);
+        p1.add(new Process(a,b,c,d,e));
     }
 }
 
@@ -77,7 +71,7 @@ void readIn(const std::string& FileName, PQueue& p, PList& p1) {
 //--------------------Simulator helper functions--------------------
 
 
-void AddArrivals(PQueue& ToArrive, Algo& A, const int t) {
+void AddArrivals(PList& ToArrive, Algo& A, const int t) {
     
     //If there are any processes yet to arrive
     while (ToArrive.size())
@@ -102,7 +96,7 @@ void AddArrivals(PQueue& ToArrive, Algo& A, const int t) {
 }
 
 //This function simply processes each event
-void ProcessEvent(Event* NextAction, PQueue& ToArrive, Process*& CPUInUse, const int t) {
+void ProcessEvent(Event* NextAction, PList& ToArrive, Process*& CPUInUse, const int t) {
     
 #ifdef DEBUG_MODE
     //If debugging, print out important events
@@ -141,7 +135,7 @@ void ProcessEvent(Event* NextAction, PQueue& ToArrive, Process*& CPUInUse, const
 }
 
 //This functions returns the next time something interesting should occur
-int getNextImportantTime(PQueue& ToArrive, Algo& A, const int t, Event* NextAction) {
+int getNextImportantTime(PList& ToArrive, Algo& A, const int t, Event* NextAction) {
     
     //Set t to the next time that something important happens
     //This will either be when the algorithim determines
@@ -174,7 +168,7 @@ int getNextImportantTime(PQueue& ToArrive, Algo& A, const int t, Event* NextActi
 
 
 //Actually run the algorithm
-void RunAlgo(PQueue& ToArrive, Algo& A) {
+void RunAlgo(PList& ToArrive, Algo& A) {
     
     //An int representing time
     int t = 0;
@@ -218,10 +212,10 @@ int main(int argc, const char * argv[]) {
     
     //The queue p what stores the processes to run
     //The vector p1 stores one pointer to each process
-    PQueue p; PList p1;
+    PList p = *Event::getPList();
     
     //Read in the file
-    readIn(argv[1],p,p1);
+    readIn(argv[1],p);
     
     //Create an algorithm
     FCFS A1;
