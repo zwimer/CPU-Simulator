@@ -82,8 +82,11 @@ public:
     uint getIOFinishTime() const;
     uint getCPUBurstTime() const;
     
+    //This function assume no preemption! It is the process' guess
+    bool getWillBeDoneNext() const;
+    
     //Returns the estimated time this process will exit the CPU
-    //This function assume no preemption! It is the processes guess
+    //This function assume no preemption! It is the process' guess
     //This function implicitly accounts for context swtiching.
     uint getFinishCPUTime() const;
     

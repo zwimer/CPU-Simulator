@@ -3,11 +3,26 @@
 
 
 //Constructor
-FCFS::FCFS() : Algo("FCFS") { FinishContextSwitch = 0; ProcessRunning = false; }
+FCFS::FCFS() : Algo("FCFS") {
+
+    //No process is running to start
+    ProcessRunning = false;
+    
+    //No context switches have occured
+    FinishContextSwitch = 0;
+    
+    //Initalize stats
+    NumContextSwitches = 0;
+}
 
 //Notifies Algorithm of a new process
 void FCFS::addProcess(uint c_time, Process *p) {
+    
+    //Add the new process to the queue
     Queued.push_back(p);
+    
+    //Record info for stats
+    NumContextSwitches++;
     AllProcesses.insert(p);
 }
 
@@ -67,9 +82,10 @@ Event* FCFS::getNextAction(uint t) {
 }
 
 
-//TODO:
-//Functions used to get the Algo's stats
-double FCFS::getAvgCPUTime(){
+//------------------------Stats functions------------------------
+
+
+double FCFS::getAvgCPUTime() const {
 
     //Variables
     double k=0,ret=0;
@@ -85,14 +101,11 @@ double FCFS::getAvgCPUTime(){
     //Returns the answer
     return ret/k;
 }
-double FCFS::getAvgWaitTime(){return 0;}
-double FCFS::getAvgTurnAroundTime(){return 0;}
-uint FCFS::getNumContextSwitches(){return 0;}
+
+//TODO:
+double FCFS::getAvgWaitTime() const {return 0;}
+double FCFS::getAvgTurnAroundTime() const {return 0;}
 
 
-
-
-
-
-//This algorithm does not preempt
-uint FCFS::getTotalNumPreemptions(){ return 0; }
+uint FCFS::getNumContextSwitches() const { return NumContextSwitches; }
+uint FCFS::getTotalNumPreemptions() const { return 0; }

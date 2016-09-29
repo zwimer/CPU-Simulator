@@ -22,7 +22,9 @@ void Err(const char *s) {
 void Assert(bool b, const char *s) { if (!b) Err(s); }
 
 
-//---------------------Process Constructors---------------------
+
+//------------------------Process Constructors------------------------
+
 
 //Constructor
 Process::Process(char a, uint b, uint c, uint d, uint e) : ProcId(a),
@@ -39,7 +41,8 @@ TimeArrived(b), CPUBurstTime(c), numBursts(d), IOTime(e) {
 Process::~Process() { Assert(getDone(), "Non-done process destructed"); }
 
 
-//-------------------------Change cState-------------------------
+//----------------------------Change cState----------------------------
+
 
 //Begin IO and record the time
 void Process::BeginIO(uint t) {
@@ -81,7 +84,9 @@ void Process::FinishCPUBurst(uint t) {
     Time_In_CPUBurst=0;
 }
 
-//---------------------------Getters---------------------------
+
+//------------------------------Getters------------------------------
+
 
 bool Process::getInIO() const { return cState == BLOCKED; }
 bool Process::getDone() const { return cState == DONE; }
@@ -93,6 +98,9 @@ uint Process::getIOFinishTime() const {
     Assert(cState==BLOCKED, "Error, no IO occuring");
     return TimeofIOBurst+IOTime;
 }
+
+//This function assume no preemption! It is the process' guess
+bool Process::getWillBeDoneNext() const { return NumberCPUDone+1==numBursts; }
 
 //Returns the estimated time this process will exit the CPU
 //This function assume no preemption! It is the processes guess
@@ -111,7 +119,9 @@ uint Process::getTimeArrived() const {
     return TimeArrived;
 }
 
-//--------------------------Get times--------------------------
+
+//-----------------------------Get times-----------------------------
+
 
 //Return turn around time
 uint Process::getTurnAroundTime(uint current_time) const {

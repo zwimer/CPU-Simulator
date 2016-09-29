@@ -14,11 +14,16 @@
 const uint m = 1;
 const uint t_cs = 8;
 
+#define DEBUG_MODE
 
 //Helpful typedef
 typedef std::priority_queue<Process*,
 std::vector<Process*>, ProcessCompare> PQueue;
 
+#ifdef DEBUG_MODE
+    //Number of context swtiches
+    int NumCS = 0;
+#endif
 
 //------------------------Input Parsing------------------------
 
@@ -80,7 +85,6 @@ void AddArrivals(PQueue& ToArrive, Algo& A, const int t) {
         if ( ToArrive.top()->getTimeArrived() == (uint)t ) {
         
 #ifdef DEBUG_MODE
-            
             //If debugging, print arriving processes
             std::cout << "-Arrive: " << ToArrive.top()->getProcID() << " at\t"<< t << '\n';
 #endif
@@ -104,7 +108,8 @@ void ProcessEvent(Event* NextAction, PQueue& ToArrive, Process*& CPUInUse, const
     if (NextAction->Type == START_BURST) std::cout << "-Start:\t ";
     if (NextAction->Type == FINISH_BURST) std::cout << "-End:\t ";
     std::cout << NextAction->p->getProcID() << " at\t"<< t << '\n';
-    if (NextAction->Type == FINISH_BURST) std::cout << '\n';
+    if (NextAction->Type == FINISH_BURST)
+        std::cout << "Number of context swtiches: " << ++NumCS << "\n\n";
 #endif
     
     //Depending on the type of event...
@@ -206,7 +211,6 @@ void RunAlgo(PQueue& ToArrive, Algo& A) {
 int main(int argc, const char * argv[]) {
 
 #ifdef DEBUG_MODE
-    
     //Disable stdout buffering
     setvbuf(stdout, NULL, _IONBF, 0);
 #endif
@@ -223,6 +227,11 @@ int main(int argc, const char * argv[]) {
     
     //Run simulator
     RunAlgo(p, A1);
+    
+#ifdef DEBUG_MODE
+    //Newline
+    std::cout << "\n\n";
+#endif
     
     //Print Stats
     A1.printInfo();

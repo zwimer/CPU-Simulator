@@ -6,7 +6,7 @@ Algo::Algo(const char *a) : AlgoName(a) {}
 
 
 //Print info
-void Algo::printInfo() {
+void Algo::printInfo() const {
     
     //Print the information in the format requested
     printf("Algorithm %s\n", AlgoName);

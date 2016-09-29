@@ -17,6 +17,9 @@ private:
     bool ProcessRunning;
     uint FinishContextSwitch;
     std::list<Process*> Queued;
+    
+    //Used solely for stats
+    uint NumContextSwitches;
     std::set<Process*> AllProcesses;
     
 public:
@@ -39,11 +42,11 @@ public:
     Event* getNextAction(uint t);
     
     //Functions used to get the Algo's stats
-    double getAvgCPUTime();
-    double getAvgWaitTime();
-    double getAvgTurnAroundTime();
-    uint getNumContextSwitches();
-    uint getTotalNumPreemptions();
+    double getAvgCPUTime() const;
+    double getAvgWaitTime() const;
+    double getAvgTurnAroundTime() const;
+    uint getTotalNumPreemptions() const;
+    uint getNumContextSwitches() const;
 };
 
 
