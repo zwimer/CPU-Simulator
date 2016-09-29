@@ -5,6 +5,7 @@
 #include "Algo.hpp"
 
 //System includes
+//#include <set>
 #include <list>
 
 //FCFS algorithm class
@@ -14,12 +15,14 @@ private:
     
     //Representation
     bool ProcessRunning;
+    uint FinishContextSwitch;
     std::list<Process*> Queued;
+//    std::list<std::pair<Process*, uint> > Queued;
     
 public:
     
     //Constructor
-    FCFS(const char* a, uint b, uint c);
+    FCFS();
     
     //Returns the amount of time until you want
     void addProcess(uint t, Process *p);
@@ -29,8 +32,11 @@ public:
     //Return's -1 is done, otherwise returns a positive number
     int nextNotify(uint t) const;
     
-    //Returns a list of events the computer must do by putting it in V
-    void getTodoList(uint t, std::vector<Event*>& V);
+    //Returns an event to do at time t
+    //This will only be called at time t!
+    //Returns NULL if there is no new event
+    //If this returns an event, a context swtich will start
+    Event* getNextAction(uint t);
     
     //Functions used to get the Algo's stats
     double getAvgCPUTime();

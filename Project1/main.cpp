@@ -93,52 +93,62 @@ void AddArrivals(PQueue& ToArrive, Algo& A, const int t) {
 }
 
 //This function simply processes each event
-void ProcessEvents(EventList& TodoList, PQueue& ToArrive, char& CPUInUse, const int t) {
+void ProcessEvent(Event* NextAction, PQueue& ToArrive, Process*& CPUInUse, const int t) {
     
-    //For each event that must be done, do it
-    for(uint i = 0; i < TodoList.size(); i++) {
-        
-        //Depending on the type of event...
-        switch (TodoList[i]->Type) {
-                
-            //If we need to have a process finish using the CPU, do so
-            case FINISH_BURST:
-                Assert(CPUInUse==TodoList[i]->p->getProcID(),
-                       "This process was not in the CPU");
-                TodoList[i]->p->FinishCPUBurst(t); CPUInUse=0;
-                
-                //If the process needs to start IO, do so
-                if (!TodoList[i]->p->getDone()) {
-                    TodoList[i]->p->BeginIO(t);
-                    ToArrive.push(TodoList[i]->p);
-                } break;
-                
-            //If we need to have a process begin context swith from the CPU, do so
-            case PAUSE_BURST:
-                Assert(CPUInUse, "This process was not in the CPU");
-                TodoList[i]->p->PauseCPUBurst(t); CPUInUse=0; break;
-                
-            //If we need to have a process begin a CPU burst, do so
-            case START_BURST:
-                Assert(!CPUInUse, std::string("Process ")
-                       .append(1,CPUInUse).append(" is using the CPU").c_str());
-                TodoList[i]->p->BeginCPUBurst(t); CPUInUse=TodoList[i]->p->getProcID();
-                
-        }
-        
-        //Since the process is done, delete the event
-        delete TodoList[i];
+    
+    
+    
+    
+    if (NextAction->Type == START_BURST) std::cout << "S";
+    if (NextAction->Type == FINISH_BURST) std::cout << "E";
+    std::cout << ":  "<< t << " by " << NextAction->p->getProcID() << std::endl;
+    
+    
+    
+    
+    
+
+    
+    //Depending on the type of event...
+    switch (NextAction->Type) {
+            
+        //If we need to have a process finish using the CPU, do so
+        case FINISH_BURST:
+            Assert(CPUInUse==NextAction->p, "This process was not in the CPU");
+            NextAction->p->FinishCPUBurst(t); CPUInUse=NULL;
+            
+            //If the process needs to start IO, do so
+            if (!NextAction->p->getDone()) {
+                NextAction->p->BeginIO(t);
+                ToArrive.push(NextAction->p);
+            } break;
+            
+        //If we need to have a process begin context swith from the CPU, do so
+        case PAUSE_BURST:
+            Assert(CPUInUse, "This process was not in the CPU");
+            NextAction->p->PauseCPUBurst(t); CPUInUse=0; break;
+            
+        //If we need to have a process begin a CPU burst, do so
+        case START_BURST:
+            Assert(!CPUInUse, "Another process is using the CPU");
+            NextAction->p->BeginCPUBurst(t); CPUInUse=NextAction->p;
+            
     }
 }
 
 //This functions returns the next time something interesting should occur
-int getNextImportantTime(PQueue& ToArrive, Algo& A, const int t) {
-
+int getNextImportantTime(PQueue& ToArrive, Algo& A, const int t, Event* NextAction) {
+    
     //Set t to the next time that something important happens
     //This will either be when the algorithim determines
     //that something important will happen, or when a new
     //process arrives which the algorithm needs to know about
     int Option1 = A.nextNotify(t);
+    
+    //Ignore the alogirthm until the context switch is done
+    if (NextAction) Option1 = Option1>t_cs/2?Option1:t_cs/2;
+    
+    //If a process has yet to arrive
     if (ToArrive.size()) {
         
         //Option2 is the time the next process arrives.
@@ -166,10 +176,10 @@ void RunAlgo(PQueue& ToArrive, Algo& A) {
     int t = 0;
     
     //The ProcID of the process using the CPU (0 if none)
-    char CPUInUse = 0;
+    Process* CPUInUse = NULL;
     
-    //Create the event list
-    EventList TodoList;
+    //Create an Event*
+    Event* NextAction;
     
     //Repeat while the alorithm is not done
     while (t != -1) {
@@ -178,16 +188,16 @@ void RunAlgo(PQueue& ToArrive, Algo& A) {
         AddArrivals(ToArrive, A, t);
         
         //Get the list of events to do now
-        A.getTodoList(t, TodoList);
+        NextAction = A.getNextAction(t);
 
-        //Process the events
-        ProcessEvents(TodoList, ToArrive, CPUInUse, t);
-        
-        //Empty the list now that everything has been completed
-        TodoList.clear();
+        //Process the event if there is one
+        if (NextAction) ProcessEvent(NextAction, ToArrive, CPUInUse, t);
 
         //Get the next important time
-        t = getNextImportantTime(ToArrive, A, t);
+        t = getNextImportantTime(ToArrive, A, t, NextAction);
+        
+        //Delete the finished event
+        delete NextAction;
     }
 }
 
@@ -205,7 +215,7 @@ int main(int argc, const char * argv[]) {
     readIn(argv[1],p,p1);
     
     //Create an algorithm
-    FCFS A1("FCFS", m, t_cs);
+    FCFS A1;
     
     //Run simulator
     RunAlgo(p, A1);

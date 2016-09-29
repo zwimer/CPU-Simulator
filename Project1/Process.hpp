@@ -7,6 +7,10 @@
 //Helpful typedef
 typedef unsigned int uint;
 
+//External global variables
+extern const uint m;
+extern const uint t_cs;
+
 //A function used if an assert fails
 void Err(const char *s);
 
@@ -78,10 +82,12 @@ public:
     
     //Returns the estimated time this process will exit the CPU
     //This function assume no preemption! It is the processes guess
+    //This function implicitly accounts for context swtiching.
     uint getFinishCPUTime() const;
     
     //Returns the time this process re-arrives
     //This returns TimeArried if IO has never been run
+    //This function explicitly accounts for context swtiching.
     uint getTimeArrived() const;
     
     //------------------------Get times------------------------

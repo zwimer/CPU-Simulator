@@ -2,8 +2,7 @@
 
 
 //Protected constructor
-Algo::Algo(const char *a, unsigned int _m, unsigned int _t_cs)
-: AlgoName(a), m(_m), t_cs(_t_cs) {}
+Algo::Algo(const char *a) : AlgoName(a) {}
 
 
 //Print info

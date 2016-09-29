@@ -55,12 +55,14 @@ void Process::FinishIO(uint t) {
 }
 
 //Begin running and record the time
+//Explicitly accounts for context swtiching
 void Process::BeginCPUBurst(uint t) {
     Assert(cState==READY, "Process was not queued!");
-    TimeofCPUBurst = t; cState = RUNNING;
+    TimeofCPUBurst = t+t_cs/2; cState = RUNNING;
 }
 
 //Context switch out of CPU burst
+//Implicitly accounts for context swtiching
 void Process::PauseCPUBurst(uint t) {
     Assert(cState == RUNNING, "Process never ran!");
     Assert(t<TimeofCPUBurst+CPUBurstTime, "CPU paused when it should have ended");
@@ -70,6 +72,7 @@ void Process::PauseCPUBurst(uint t) {
 }
 
 //Finish CPU burst
+//Implicitly accounts for context swtiching
 void Process::FinishCPUBurst(uint t) {
     Assert(cState == RUNNING, "Process never ran!");
     Assert(t+Time_In_CPUBurst==TimeofCPUBurst+CPUBurstTime, "CPU finished at the wrong time");
@@ -90,12 +93,14 @@ uint Process::getIODone(uint t) const {
 
 //Returns the estimated time this process will exit the CPU
 //This function assume no preemption! It is the processes guess
+//This function implicitly accounts for context swtiching.
 uint Process::getFinishCPUTime() const {
     Assert(cState==RUNNING, "Process is not in the CPU");
     return CPUBurstTime+TimeofCPUBurst-Time_In_CPUBurst;
 }
 
 //Returns the time this process will finish IO
+//This function explicitly accounts for context swtiching.
 uint Process::getTimeArrived() const {
     Assert(cState!=DONE, "Process is not in arrival queue");
     Assert(cState!=RUNNING, "Process is not in arrival queue");

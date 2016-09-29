@@ -7,27 +7,15 @@
 //System includes
 #include <vector>
 
-//External global variables
-extern const uint m;
-extern const uint t_cs;
-
-//Helpful typdef
-typedef std::vector<Event*> EventList;
-
 //An abstract class to be extend by the actualy algorithms
 class Algo {
     
 protected:
     
     //The constructor
-    Algo(const char* name, uint _m, uint _t_cs);
-    
-    //Copied versions of the global variables
-    const uint m;
-    const uint t_cs;
+    Algo(const char* name);
     
     //The name of the algorithm
-    //Should be the same as the class name
     const char* AlgoName;
     
 public:
@@ -41,12 +29,15 @@ public:
     //The algorithm will return a uint specifying
     //the next time it wants to be notified of the time
     //Return's -1 is done, otherwise returns a positive number
+    //Note, the Algorithm sub-classes must be aware that the simulation
+    //implements context switching! The algorithm must account for this!
+    //Half of a context switch of of time t_cs/2 will occur after each event!
     virtual int nextNotify(uint t) const=0;
     
     //This function will ONLY be called once per any t
     //It is allowed to modify it's internal state if it wishes
     //Returns a list of events the computer must do by putting it in V
-    virtual void getTodoList(uint t, EventList& V)=0;
+    virtual Event* getNextAction(uint t)=0;
     
     //A function used to print this algorithm's stats
     void printInfo();
