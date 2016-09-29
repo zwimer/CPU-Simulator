@@ -8,6 +8,7 @@ FCFS::FCFS() : Algo("FCFS") { FinishContextSwitch = 0; ProcessRunning = false; }
 //Notifies Algorithm of a new process
 void FCFS::addProcess(uint c_time, Process *p) {
     Queued.push_back(p);
+    AllProcesses.insert(p);
 }
 
 //The algorithm will return a uint specifying
@@ -68,7 +69,22 @@ Event* FCFS::getNextAction(uint t) {
 
 //TODO:
 //Functions used to get the Algo's stats
-double FCFS::getAvgCPUTime(){return 0;}
+double FCFS::getAvgCPUTime(){
+
+    //Variables
+    double k=0,ret=0;
+    
+    //For each Process
+    for(std::set<Process*>::const_iterator
+        i = AllProcesses.begin(); i != AllProcesses.end(); i++) {
+        
+        //Find how much CPU time was used and how many bursts occured
+        k += (*i)->getNumBursts(); ret += (*i)->getNumBursts()*(*i)->getCPUBurstTime();
+    }
+    
+    //Returns the answer
+    return ret/k;
+}
 double FCFS::getAvgWaitTime(){return 0;}
 double FCFS::getAvgTurnAroundTime(){return 0;}
 uint FCFS::getNumContextSwitches(){return 0;}

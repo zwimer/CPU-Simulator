@@ -10,7 +10,6 @@
 #include <algorithm>
 #include <functional>
 
-
 //Global constants
 const uint m = 1;
 const uint t_cs = 8;
@@ -79,10 +78,15 @@ void AddArrivals(PQueue& ToArrive, Algo& A, const int t) {
         
         //For each processes that is starting now
         if ( ToArrive.top()->getTimeArrived() == (uint)t ) {
+        
+#ifdef DEBUG_MODE
+            
+            //If debugging, print arriving processes
+            std::cout << "-Arrive: " << ToArrive.top()->getProcID() << " at\t"<< t << '\n';
+#endif
             
             //Mark IO completed if necessary
-            if (ToArrive.top()->getIODone(t))
-                ToArrive.top()->FinishIO(t);
+            if (ToArrive.top()->getInIO()) ToArrive.top()->FinishIO(t);
             
             //Tell the Algorithm
             A.addProcess(t, ToArrive.top());
@@ -95,19 +99,13 @@ void AddArrivals(PQueue& ToArrive, Algo& A, const int t) {
 //This function simply processes each event
 void ProcessEvent(Event* NextAction, PQueue& ToArrive, Process*& CPUInUse, const int t) {
     
-    
-    
-    
-    
-    if (NextAction->Type == START_BURST) std::cout << "S";
-    if (NextAction->Type == FINISH_BURST) std::cout << "E";
-    std::cout << ":  "<< t << " by " << NextAction->p->getProcID() << std::endl;
-    
-    
-    
-    
-    
-
+#ifdef DEBUG_MODE
+    //If debugging, print out important events
+    if (NextAction->Type == START_BURST) std::cout << "-Start:\t ";
+    if (NextAction->Type == FINISH_BURST) std::cout << "-End:\t ";
+    std::cout << NextAction->p->getProcID() << " at\t"<< t << '\n';
+    if (NextAction->Type == FINISH_BURST) std::cout << '\n';
+#endif
     
     //Depending on the type of event...
     switch (NextAction->Type) {
@@ -207,6 +205,12 @@ void RunAlgo(PQueue& ToArrive, Algo& A) {
 //The main function
 int main(int argc, const char * argv[]) {
 
+#ifdef DEBUG_MODE
+    
+    //Disable stdout buffering
+    setvbuf(stdout, NULL, _IONBF, 0);
+#endif
+    
     //The queue p what stores the processes to run
     //The vector p1 stores one pointer to each process
     PQueue p; std::vector<Process*> p1;

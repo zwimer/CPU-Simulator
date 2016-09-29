@@ -5,7 +5,7 @@
 #include "Algo.hpp"
 
 //System includes
-//#include <set>
+#include <set>
 #include <list>
 
 //FCFS algorithm class
@@ -17,7 +17,7 @@ private:
     bool ProcessRunning;
     uint FinishContextSwitch;
     std::list<Process*> Queued;
-//    std::list<std::pair<Process*, uint> > Queued;
+    std::set<Process*> AllProcesses;
     
 public:
     

@@ -83,12 +83,15 @@ void Process::FinishCPUBurst(uint t) {
 
 //---------------------------Getters---------------------------
 
-bool Process::getDone() const { return (cState == DONE); }
+bool Process::getInIO() const { return cState == BLOCKED; }
+bool Process::getDone() const { return cState == DONE; }
 char Process::getProcID() const { return ProcId; }
 uint Process::getIOTIME() const { return IOTime; }
+uint Process::getNumBursts() const { return numBursts; }
 uint Process::getCPUBurstTime() const { return CPUBurstTime; }
-uint Process::getIODone(uint t) const {
-    return cState==BLOCKED && t==TimeofIOBurst+IOTime;
+uint Process::getIOFinishTime() const {
+    Assert(cState==BLOCKED, "Error, no IO occuring");
+    return TimeofIOBurst+IOTime;
 }
 
 //Returns the estimated time this process will exit the CPU

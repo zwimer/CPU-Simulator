@@ -74,10 +74,12 @@ public:
     
     //------------------------Getters------------------------
     
+    bool getInIO() const;
     bool getDone() const;
     char getProcID() const;
     uint getIOTIME() const;
-    uint getIODone(uint) const;
+    uint getNumBursts() const;
+    uint getIOFinishTime() const;
     uint getCPUBurstTime() const;
     
     //Returns the estimated time this process will exit the CPU
