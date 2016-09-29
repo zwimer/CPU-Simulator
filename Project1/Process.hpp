@@ -1,6 +1,7 @@
 #ifndef Process_hpp
 #define Process_hpp
 
+//System includes
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -42,7 +43,7 @@ private:
     //The current state
     enum PState cState;
     
-    //Variabels meant to timekeep
+    //Variabels meant to timekeep bursts
     uint TimeofIOBurst;
     uint TimeofCPUBurst;
     uint Time_In_CPUBurst;

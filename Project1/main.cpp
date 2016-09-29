@@ -1,4 +1,5 @@
 //My includes
+#include "PList.hpp"
 #include "FCFS.hpp"
 
 //System includes
@@ -37,7 +38,7 @@ inline const bool emptyString(std::string s) {
 }
 
 //Reads the file and creates a vector of processes read in
-void readIn(const std::string& FileName, PQueue& p, std::vector<Process*>& p1) {
+void readIn(const std::string& FileName, PQueue& p, PList& p1) {
     
     //Values on each relevant line
     char a; uint b,c,d,e;
@@ -68,7 +69,7 @@ void readIn(const std::string& FileName, PQueue& p, std::vector<Process*>& p1) {
         
         //Add a new process
         Process *newP = new Process(a,b,c,d,e);
-        p.push(newP); p1.push_back(newP);
+        p.push(newP); p1.add(newP);
     }
 }
 
@@ -217,7 +218,7 @@ int main(int argc, const char * argv[]) {
     
     //The queue p what stores the processes to run
     //The vector p1 stores one pointer to each process
-    PQueue p; std::vector<Process*> p1;
+    PQueue p; PList p1;
     
     //Read in the file
     readIn(argv[1],p,p1);
@@ -235,9 +236,6 @@ int main(int argc, const char * argv[]) {
     
     //Print Stats
     A1.printInfo();
-    
-    //Prevent memory leaks
-    for(uint i = 0; i < p1.size(); i++) delete p1[i];
  
     //Success
     return EXIT_SUCCESS;

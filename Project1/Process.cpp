@@ -94,13 +94,15 @@ char Process::getProcID() const { return ProcId; }
 uint Process::getIOTIME() const { return IOTime; }
 uint Process::getNumBursts() const { return numBursts; }
 uint Process::getCPUBurstTime() const { return CPUBurstTime; }
+
+//This function assume no preemption! It is the process' guess
+bool Process::getWillBeDoneNext() const { return NumberCPUDone+1==numBursts; }
+
+//Returns when
 uint Process::getIOFinishTime() const {
     Assert(cState==BLOCKED, "Error, no IO occuring");
     return TimeofIOBurst+IOTime;
 }
-
-//This function assume no preemption! It is the process' guess
-bool Process::getWillBeDoneNext() const { return NumberCPUDone+1==numBursts; }
 
 //Returns the estimated time this process will exit the CPU
 //This function assume no preemption! It is the processes guess
@@ -110,7 +112,9 @@ uint Process::getFinishCPUTime() const {
     return CPUBurstTime+TimeofCPUBurst-Time_In_CPUBurst;
 }
 
-//Returns the time this process will finish IO
+//Returns the time this process arrived.
+//If this process is in IO, then it returns
+//the time this process will finish IO
 //This function explicitly accounts for context swtiching.
 uint Process::getTimeArrived() const {
     Assert(cState!=DONE, "Process is not in arrival queue");
@@ -154,9 +158,11 @@ uint Process::getWaitTime(uint current_time) const {
     //Subtract IOTime
     ret -= IOTime*(numBursts-1);
     
+    //Return the answer
     return ret;
 }
 
 //Returns true if a > b
+//Sorts by time arrived
 bool ProcessCompare::operator() (const Process* a, const Process* b)
 {return a->getTimeArrived() > b->getTimeArrived();}
