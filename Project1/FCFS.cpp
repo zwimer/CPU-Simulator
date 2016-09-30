@@ -2,7 +2,7 @@
 
 
 //Constructor
-FCFS::FCFS() : Algo("FCFS") {
+FCFS::FCFS() : Algo() {
 
     //No process is running to start
     ProcessRunning = false;

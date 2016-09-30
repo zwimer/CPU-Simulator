@@ -2,7 +2,7 @@
 
 
 //Protected constructor
-Algo::Algo(const char *a) : AlgoName(a) {}
+Algo::Algo() {}
 
 //Destructor
 Algo::~Algo() {}
