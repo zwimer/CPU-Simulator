@@ -50,43 +50,64 @@ void Process::reset() { cState = READY; NumberCPUDone = 0; }
 //----------------------------Change cState----------------------------
 
 
-//Begin IO and record the time
+//Begin IO
 void Process::BeginIO(uint t) {
+    
+    //Error checking
     Assert(cState==READY_FOR_IO, "Can't begin IO");
+    
+    //Begin IO and record the time
     TimeofIOBurst=t; cState=BLOCKED;
 }
 
 //Finish IO
 void Process::FinishIO(uint t) {
+    
+    //Error checking
     Assert(cState==BLOCKED, "Process not blocked");
     Assert(t==TimeofIOBurst+IOTime, "IO finished at the wrong time");
+    
+    //FinishIO
     cState=READY;
 }
 
-//Begin running and record the time
+//Begin CPU burst
 //Explicitly accounts for context swtiching
 void Process::BeginCPUBurst(uint t) {
+    
+    //Error checking
     Assert(cState==READY, "Process was not queued!");
+    
+    //Begin running and record the time
     TimeofCPUBurst = t+t_cs/2; cState = RUNNING;
 }
 
 //Context switch out of CPU burst
 //Implicitly accounts for context swtiching
 void Process::PauseCPUBurst(uint t) {
+    
+    //Error checking
     Assert(cState == RUNNING, "Process never ran!");
     Assert(t<TimeofCPUBurst+CPUBurstTime, "CPU paused when it should have ended");
     Assert(t>=TimeofCPUBurst, "Error, t < Time of this CPU burst");
-    Time_In_CPUBurst+=t-TimeofCPUBurst;
-    cState=READY;
+    
+    //Record current CPU time and set state to ready
+    Time_In_CPUBurst+=t-TimeofCPUBurst; cState=READY;
 }
 
 //Finish CPU burst
 //Implicitly accounts for context swtiching
 void Process::FinishCPUBurst(uint t) {
+    
+    //Error checking
     Assert(cState == RUNNING, "Process never ran!");
     Assert(t+Time_In_CPUBurst==TimeofCPUBurst+CPUBurstTime, "CPU finished at the wrong time");
+    
+    //If the process is completely dones, note so
     if (++NumberCPUDone==numBursts) cState=DONE;
     else cState=READY_FOR_IO;
+    
+    //Zero out time for next burst
     Time_In_CPUBurst=0;
 }
 
@@ -145,7 +166,7 @@ uint Process::getTurnAroundTime(uint current_time) const {
     Assert(current_time >= TimeArrived,
            "Error, process finished before it arrived");
     
-    //Return
+    //Return the answer
     return current_time - TimeArrived;
 }
 
