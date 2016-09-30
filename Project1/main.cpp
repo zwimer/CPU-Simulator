@@ -33,7 +33,7 @@ inline const bool emptyString(std::string s) {
 }
 
 //Reads the file and creates a vector of processes read in
-void readIn(const std::string& FileName, PList& p1) {
+void readIn(const std::string& FileName, PList* p) {
     
     //Values on each relevant line
     char a; uint b,c,d,e;
@@ -63,7 +63,7 @@ void readIn(const std::string& FileName, PList& p1) {
         nextLine >> a >> b >> c >> d >> e;
         
         //Add a new process
-        p1.add(new Process(a,b,c,d,e));
+        p->add(new Process(a,b,c,d,e));
     }
 }
 
@@ -71,32 +71,32 @@ void readIn(const std::string& FileName, PList& p1) {
 //--------------------Simulator helper functions--------------------
 
 
-void AddArrivals(PList& ToArrive, Algo& A, const int t) {
+void AddArrivals(PList* ToArrive, Algo& A, const int t) {
     
     //If there are any processes yet to arrive
-    while (ToArrive.size())
+    while (ToArrive->size())
         
         //For each processes that is starting now
-        if ( ToArrive.top()->getTimeArrived() == (uint)t ) {
+        if ( ToArrive->top()->getTimeArrived() == (uint)t ) {
         
 #ifdef DEBUG_MODE
             //If debugging, print arriving processes
-            std::cout << "-Arrive: " << ToArrive.top()->getProcID() << " at\t"<< t << '\n';
+            std::cout << "-Arrive: " << ToArrive->top()->getProcID() << " at\t"<< t << '\n';
 #endif
             
             //Mark IO completed if necessary
-            if (ToArrive.top()->getInIO()) ToArrive.top()->FinishIO(t);
+            if (ToArrive->top()->getInIO()) ToArrive->top()->FinishIO(t);
             
             //Tell the Algorithm
-            A.addProcess(t, ToArrive.top());
+            A.addProcess(t, ToArrive->top());
             
             //Remove the process from the list
-            ToArrive.pop();
+            ToArrive->pop();
         } else return;
 }
 
 //This function simply processes each event
-void ProcessEvent(Event* NextAction, PList& ToArrive, Process*& CPUInUse, const int t) {
+void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse, const int t) {
     
 #ifdef DEBUG_MODE
     //If debugging, print out important events
@@ -118,7 +118,7 @@ void ProcessEvent(Event* NextAction, PList& ToArrive, Process*& CPUInUse, const 
             //If the process needs to start IO, do so
             if (!NextAction->p->getDone()) {
                 NextAction->p->BeginIO(t);
-                ToArrive.push(NextAction->p);
+                ToArrive->push(NextAction->p);
             } break;
             
         //If we need to have a process begin context swith from the CPU, do so
@@ -135,7 +135,7 @@ void ProcessEvent(Event* NextAction, PList& ToArrive, Process*& CPUInUse, const 
 }
 
 //This functions returns the next time something interesting should occur
-int getNextImportantTime(PList& ToArrive, Algo& A, const int t, Event* NextAction) {
+int getNextImportantTime(PList* ToArrive, Algo& A, const int t, Event* NextAction) {
     
     //Set t to the next time that something important happens
     //This will either be when the algorithim determines
@@ -147,10 +147,10 @@ int getNextImportantTime(PList& ToArrive, Algo& A, const int t, Event* NextActio
     if (NextAction) Option1 = Option1>t_cs/2?Option1:t_cs/2;
     
     //If a process has yet to arrive
-    if (ToArrive.size()) {
+    if (ToArrive->size()) {
         
         //Option2 is the time the next process arrives.
-        uint Option2 = ToArrive.top()->getTimeArrived();
+        uint Option2 = ToArrive->top()->getTimeArrived();
         
         //Pick the smallest positive time
         if (Option1 == -1) return Option2;
@@ -168,10 +168,10 @@ int getNextImportantTime(PList& ToArrive, Algo& A, const int t, Event* NextActio
 
 
 //Actually run the algorithm
-void RunAlgo(PList& ToArrive, Algo& A) {
+void RunAlgo(PList* ToArrive, Algo& A) {
     
     //An int representing time
-    int t = 0;
+    int* t = Event::getTimePtr();
     
     //The ProcID of the process using the CPU (0 if none)
     Process* CPUInUse = NULL;
@@ -180,19 +180,19 @@ void RunAlgo(PList& ToArrive, Algo& A) {
     Event* NextAction;
     
     //Repeat while the alorithm is not done
-    while (t != -1) {
+    while (*t != -1) {
 
         //Add new processes
-        AddArrivals(ToArrive, A, t);
+        AddArrivals(ToArrive, A, *t);
         
         //Get the list of events to do now
-        NextAction = A.getNextAction(t);
+        NextAction = A.getNextAction(*t);
 
         //Process the event if there is one
-        if (NextAction) ProcessEvent(NextAction, ToArrive, CPUInUse, t);
+        if (NextAction) ProcessEvent(NextAction, ToArrive, CPUInUse, *t);
 
         //Get the next important time
-        t = getNextImportantTime(ToArrive, A, t, NextAction);
+        *t = getNextImportantTime(ToArrive, A, *t, NextAction);
         
         //Delete the finished event
         delete NextAction;
@@ -212,7 +212,7 @@ int main(int argc, const char * argv[]) {
     
     //The queue p what stores the processes to run
     //The vector p1 stores one pointer to each process
-    PList p = *Event::getPList();
+    PList *p = Event::getPList();
     
     //Read in the file
     readIn(argv[1],p);
@@ -229,7 +229,7 @@ int main(int argc, const char * argv[]) {
 #endif
     
     //Print Stats
-    A1.printInfo();
+    p->printInfo("FCFS");
  
     //Success
     return EXIT_SUCCESS;

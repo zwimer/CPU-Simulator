@@ -21,13 +21,17 @@ class Event {
 private:
     
     //Representation
+    static int t;
     static PList* ProcList;
     
 public:
     
-    //Constructor
+    //Constructors
     Event(const enum PEvent a, Process *const b);
     
+    //Static functions
+    static uint getTime();
+    static int* getTimePtr();
     static PList* getPList();
     
     //Representation

@@ -13,6 +13,7 @@ class Event;
 
 
 //System includes
+#include <map>
 #include <queue>
 
 //Helpful typedef
@@ -29,7 +30,17 @@ private:
     
     //Representation:
     PQueue Q;
+    std::vector<Process*> P;
     
+    //Record stats
+    int numPreemptions;
+    int numContextSwitches;
+    std::vector<int> WaitTimes;
+    std::map<Process*, int> TurnAroundTimes;
+    
+    
+    void constructorHelper();
+
 public:
     
     //Constructor
@@ -39,13 +50,20 @@ public:
     ~PList();
     
     
+    //A function used to print this algorithm's stats
+    //Note, this function truncates to two decimal places
+    void printInfo(const char* n) const;
+    
+    
+    void hardReset();
+    
     
     //A way to add a process to this list
-    void add(Process* p) const;
+    void add(Process* p);
     
     //A way to inform this list that
     //something important has occured
-    void inform(Event* e) const;
+    void inform(Event* e);
     
     
     //-------------------Priority Queue functions-------------------
@@ -59,9 +77,8 @@ public:
     //Returns the size of the queue
     uint size() const;
     
-    
-    
-    
+    //Q.pop()
+    void pop();
     
 };
 

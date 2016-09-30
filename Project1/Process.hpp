@@ -82,6 +82,7 @@ public:
     uint getNumBursts() const;
     uint getIOFinishTime() const;
     uint getCPUBurstTime() const;
+    uint getNumBurstsDone() const;
     
     //This function assume no preemption! It is the process' guess
     bool getWillBeDoneNext() const;

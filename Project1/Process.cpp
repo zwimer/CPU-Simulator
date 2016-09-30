@@ -94,6 +94,7 @@ char Process::getProcID() const { return ProcId; }
 uint Process::getIOTIME() const { return IOTime; }
 uint Process::getNumBursts() const { return numBursts; }
 uint Process::getCPUBurstTime() const { return CPUBurstTime; }
+uint Process::getNumBurstsDone() const { return NumberCPUDone; }
 
 //This function assume no preemption! It is the process' guess
 bool Process::getWillBeDoneNext() const { return NumberCPUDone+1==numBursts; }

@@ -41,10 +41,6 @@ public:
     //Returns a list of events the computer must do by putting it in V
     virtual Event* getNextAction(uint t) = 0;
     
-    //A function used to print this algorithm's stats
-    //Note, this function truncates to two decimal places
-    void printInfo() const;
-    
 private:
     
     //Functions used to get the Algo's stats
