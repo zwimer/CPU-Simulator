@@ -1,12 +1,12 @@
 #ifndef Process_hpp
 #define Process_hpp
 
+//My includes
+#include "PList.hpp"
+
 //System includes
 #include <stdio.h>
 #include <stdlib.h>
-
-//Helpful typedef
-typedef unsigned int uint;
 
 //External global variables
 extern const uint m;
@@ -17,7 +17,6 @@ void Err(const char *s);
 
 //A function used to test assertions
 void Assert(bool b, const char *s);
-
 
 //Enum PStates.
 //Any states that contain the name of another state in them,
@@ -43,10 +42,16 @@ private:
     //The current state
     enum PState cState;
     
-    //Variabels meant to timekeep bursts
+    //Variables meant to timekeep bursts
     uint TimeofIOBurst;
     uint TimeofCPUBurst;
     uint Time_In_CPUBurst;
+    
+    //Reset function
+    void reset();
+    
+    //Allow PList to call reset
+    friend void PList::reset();
     
 public:
     

@@ -2,15 +2,11 @@
 #include "Event.hpp"
 
 
-
+//Constructor
 PList::PList() { constructorHelper(); }
 
-
-PList::~PList() {
-    
-    //Prevent memory leaks
-//    for(uint i = 0; i < p1.size(); i++) delete p1[i];
-}
+//Prevent memory leaks
+PList::~PList() { for(uint i = 0; i < P.size(); i++) delete P[i]; }
 
 void PList::constructorHelper() {
     
@@ -19,6 +15,18 @@ void PList::constructorHelper() {
     
 }
 
+void PList::reset() {
+    
+    //Clear unneeded values
+    WaitTimes.clear();
+    TurnAroundTimes.clear();
+
+    //Reset each process
+    for(uint i = 0; i < P.size(); i++) P[i]->reset();
+    
+    //Reset defaults
+    constructorHelper();
+}
 
 
 void PList::add(Process* p) {
@@ -64,25 +72,11 @@ void PList::inform(Event *e) {
     
     else if (e->Type == PAUSE_BURST) numPreemptions++;
     
-    else if (e->Type == FINISH_BURST) {
-        if (e->p->getNumBursts() == 1+e->p->getNumBurstsDone())
-            TurnAroundTimes[e->p] = Event::getTime() - TurnAroundTimes[e->p];
-    }
-    
-    
-    
-    //This should never happen
-    else Err("Illegal Event type");
+    else if (e->Type == FINISH_BURST && e->p->getNumBursts() == 1+e->p->getNumBurstsDone())
+        TurnAroundTimes[e->p] = Event::getTime() - TurnAroundTimes[e->p];
 }
 
-//-avg burst time
 
-
-
-
-
-
-    
 //Print info
 void PList::printInfo(const char* n) const {
     

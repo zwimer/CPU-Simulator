@@ -1,24 +1,22 @@
 #ifndef PList_hpp
 #define PList_hpp
 
-
-
-#include "Process.hpp"
-
-
-class Event;
-
-
-
-
-
 //System includes
 #include <map>
 #include <queue>
+#include <vector>
+
+
+//Forward declareations
+class Event;
+class Process;
+class ProcessCompare;
 
 //Helpful typedef
+typedef unsigned int uint;
 typedef std::priority_queue<Process*,
 std::vector<Process*>, ProcessCompare> PQueue;
+
 
 //This class acts as a priority queue.
 //However it also record all important events.
@@ -54,9 +52,8 @@ public:
     //Note, this function truncates to two decimal places
     void printInfo(const char* n) const;
     
-    
-    void hardReset();
-    
+    //Resets the simulation
+    void reset();
     
     //A way to add a process to this list
     void add(Process* p);

@@ -231,6 +231,9 @@ int main(int argc, const char * argv[]) {
     //Print Stats
     p->printInfo("FCFS");
  
+    //Reset
+    p->reset();
+    
     //Success
     return EXIT_SUCCESS;
 }

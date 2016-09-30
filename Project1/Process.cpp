@@ -41,6 +41,13 @@ TimeArrived(b), CPUBurstTime(c), numBursts(d), IOTime(e) {
 Process::~Process() { Assert(getDone(), "Non-done process destructed"); }
 
 
+//--------------------------Private functions--------------------------
+
+
+//Reset
+void Process::reset() { cState = READY; NumberCPUDone = 0; }
+
+
 //----------------------------Change cState----------------------------
 
 
