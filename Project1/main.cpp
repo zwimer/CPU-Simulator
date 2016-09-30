@@ -144,7 +144,7 @@ int getNextImportantTime(PList* ToArrive, Algo& A, const int t, Event* NextActio
     int Option1 = A.nextNotify(t);
     
     //Ignore the alogirthm until the context switch is done
-    if (NextAction) Option1 = Option1>t_cs/2?Option1:t_cs/2;
+    if (NextAction) Option1 = Option1>(int)t_cs/2?Option1:(int)t_cs/2;
     
     //If a process has yet to arrive
     if (ToArrive->size()) {
