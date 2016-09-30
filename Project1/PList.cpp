@@ -6,10 +6,11 @@
 PList::PList() { constructorHelper(); }
 
 //Prevent memory leaks
-PList::~PList() { for(uint i = 0; i < P.size(); i++) delete P[i]; }
+PList::~PList() { for(uint i = 0; i < P.size(); i++) delete P[i]; delete Q; }
 
 void PList::constructorHelper() {
     
+    Q = new PQueue;
     numPreemptions = 0;
     numContextSwitches = 0;
     
@@ -31,7 +32,7 @@ void PList::reset() {
 
 void PList::add(Process* p) {
 
-    Q.push(p);
+    Q->push(p);
     
     //If the process has never arrived yet
     if (!p->getNumBurstsDone()) {
@@ -42,16 +43,16 @@ void PList::add(Process* p) {
 
 
 //Adds p to the priority queue
-void PList::push(Process* p) { Q.push(p); }
+void PList::push(Process* p) { Q->push(p); }
 
 //Returns the size of the queue
-uint PList::size() const { return (uint)Q.size(); }
+uint PList::size() const { return (uint)Q->size(); }
 
 //Returns Q.top()
-Process* PList::top() const { return Q.top(); }
+Process* PList::top() const { return Q->top(); }
 
 //Q.pop()
-void PList::pop() { Q.pop(); }
+void PList::pop() { Q->pop(); }
 
 
 

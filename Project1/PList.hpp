@@ -7,10 +7,11 @@
 #include <vector>
 
 
-//Forward declareations
+//Forward declarations
 class Event;
 class Process;
 class ProcessCompare;
+
 
 //Helpful typedef
 typedef unsigned int uint;
@@ -27,7 +28,7 @@ class PList {
 private:
     
     //Representation:
-    PQueue Q;
+    PQueue* Q;
     std::vector<Process*> P;
     
     //Record stats

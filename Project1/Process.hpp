@@ -1,8 +1,12 @@
 #ifndef Process_hpp
 #define Process_hpp
 
+#include "typedefsAndEnums.h"
+
 //My includes
 #include "PList.hpp"
+//class PList;
+//void PList::reset();
 
 //System includes
 #include <stdio.h>
