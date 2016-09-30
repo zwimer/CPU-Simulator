@@ -14,7 +14,7 @@ const uint m = 1;
 const uint t_cs = 8;
 
 //For debugging
-#define DEBUG_MODE
+//#define DEBUG_MODE
 
 //------------------------Input Parsing------------------------
 
@@ -196,14 +196,18 @@ void RunAlgo(PList* ToArrive, Algo& A) {
 //A tiny function to run the full simulation
 inline void Simulate(Algo *A, PList *p, const char* n) {
     
+    //The number of times
+    //the simulation has run
+    static uint numSim = 0;
+    
+    //Reset if needed
+    if (numSim++) p->reset();
+    
     //Run simulator
     RunAlgo(p, *A);
     
     //Print Stats
     p->printInfo("FCFS");
-    
-    //Reset
-    p->reset();
     
     //Delete the algorithm
     delete A;
@@ -234,6 +238,9 @@ int main(int argc, const char * argv[]) {
     
     //Run the RR algorithm
     //Simulate(new RR, p, "RR");
+
+    //Prevent memory leaks
+    delete p;
     
     //Success
     return EXIT_SUCCESS;

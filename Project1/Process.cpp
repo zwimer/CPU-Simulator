@@ -43,8 +43,15 @@ Process::~Process() { Assert(getDone(), "Non-done process destructed"); }
 //--------------------------Private functions--------------------------
 
 
-//Reset
-void Process::reset() { cState = READY; NumberCPUDone = 0; }
+//Reset's this process for the next simulation
+void Process::reset() {
+    
+    //Error checking
+    Assert(cState==DONE, "Reset called before all processes finished");
+    
+    //Reset
+    cState = READY; NumberCPUDone = 0;
+}
 
 
 //----------------------------Change cState----------------------------
