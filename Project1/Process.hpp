@@ -8,10 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//External global variables
-extern const uint m;
-extern const uint t_cs;
-
 //A function used if an assert fails
 void Err(const char *s);
 

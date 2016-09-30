@@ -7,6 +7,12 @@
 #include <vector>
 
 
+
+//External global variables
+extern const unsigned int m;
+extern const unsigned int t_cs;
+
+
 //Forward declarations
 class Event;
 class Process;
