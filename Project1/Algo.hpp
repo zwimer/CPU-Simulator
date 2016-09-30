@@ -23,6 +23,9 @@ public:
     //Ban default constructor
     Algo()=delete;
     
+    //The destructor
+    virtual ~Algo() = 0;
+    
     //Notifies Algorithm of a new process
     //'New processes' include processes that
     //just finished IO and need another CPU burst
@@ -40,19 +43,6 @@ public:
     //It is allowed to modify it's internal state if it wishes
     //Returns a list of events the computer must do by putting it in V
     virtual Event* getNextAction(uint t) = 0;
-    
-private:
-    
-    //Functions used to get the Algo's stats
-    virtual double getAvgCPUTime() const = 0;
-    virtual double getAvgWaitTime() const = 0;
-    virtual double getAvgTurnAroundTime() const = 0;
-    virtual uint getTotalNumPreemptions() const = 0;
-    
-    //Note: this assume that a switching a process in
-    //counts as half a context swtich, and switching a
-    //process out of the CPU counts as another half.
-    virtual uint getNumContextSwitches() const = 0;
 };
 
 #endif /* Algo_hpp */

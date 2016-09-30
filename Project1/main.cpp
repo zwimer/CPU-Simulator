@@ -13,13 +13,8 @@
 const uint m = 1;
 const uint t_cs = 8;
 
+//For debugging
 #define DEBUG_MODE
-
-
-#ifdef DEBUG_MODE
-    //Number of context swtiches
-    int NumCS = 0;
-#endif
 
 //------------------------Input Parsing------------------------
 
@@ -103,8 +98,7 @@ void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse, const 
     if (NextAction->Type == START_BURST) std::cout << "-Start:\t ";
     if (NextAction->Type == FINISH_BURST) std::cout << "-End:\t ";
     std::cout << NextAction->p->getProcID() << " at\t"<< t << '\n';
-    if (NextAction->Type == FINISH_BURST)
-        std::cout << "Number of context swtiches: " << ++NumCS << "\n\n";
+    if (NextAction->Type == FINISH_BURST) std::cout << '\n';
 #endif
     
     //Depending on the type of event...
@@ -199,6 +193,21 @@ void RunAlgo(PList* ToArrive, Algo& A) {
     }
 }
 
+//A tiny function to run the full simulation
+inline void Simulate(Algo *A, PList *p, const char* n) {
+    
+    //Run simulator
+    RunAlgo(p, *A);
+    
+    //Print Stats
+    p->printInfo("FCFS");
+    
+    //Reset
+    p->reset();
+    
+    //Delete the algorithm
+    delete A;
+}
 
 //--------------------------Main--------------------------
 
@@ -219,20 +228,7 @@ int main(int argc, const char * argv[]) {
     
     //Create an algorithm
     FCFS A1;
-    
-    //Run simulator
-    RunAlgo(p, A1);
-    
-#ifdef DEBUG_MODE
-    //Newline
-    std::cout << "\n\n";
-#endif
-    
-    //Print Stats
-    p->printInfo("FCFS");
- 
-    //Reset
-    p->reset();
+
     
     //Success
     return EXIT_SUCCESS;

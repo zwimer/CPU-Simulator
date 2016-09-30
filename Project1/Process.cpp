@@ -22,7 +22,6 @@ void Err(const char *s) {
 void Assert(bool b, const char *s) { if (!b) Err(s); }
 
 
-
 //------------------------Process Constructors------------------------
 
 

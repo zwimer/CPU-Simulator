@@ -12,7 +12,6 @@ class Event;
 class Process;
 class ProcessCompare;
 
-
 //Helpful typedef
 typedef unsigned int uint;
 typedef std::priority_queue<Process*,
@@ -37,7 +36,7 @@ private:
     std::vector<int> WaitTimes;
     std::map<Process*, int> TurnAroundTimes;
     
-    
+    //A private helper function
     void constructorHelper();
 
 public:
@@ -48,34 +47,32 @@ public:
     //Destructor
     ~PList();
     
-    
-    //A function used to print this algorithm's stats
-    //Note, this function truncates to two decimal places
-    void printInfo(const char* n) const;
-    
-    //Resets the simulation
-    void reset();
-    
     //A way to add a process to this list
-    void add(Process* p);
+    void add(Process* p, bool runBefore = false);
+    
+    //Resets the simulation's stats and processes
+    void reset();
     
     //A way to inform this list that
     //something important has occured
     void inform(Event* e);
     
+    //A function used to print this algorithm's stats
+    //Note, this function truncates to two decimal places
+    void printInfo(const char* n) const;
     
     //-------------------Priority Queue functions-------------------
 
     //Adds p to the priority queue
     void push(Process* p);
     
-    //Returns Q.top()
+    //Returns Q->top()
     Process* top() const;
     
     //Returns the size of the queue
     uint size() const;
     
-    //Q.pop()
+    //Q->pop()
     void pop();
     
 };

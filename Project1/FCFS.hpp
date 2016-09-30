@@ -27,6 +27,9 @@ public:
     //Constructor
     FCFS();
     
+    //Destructor
+    ~FCFS();
+    
     //Returns the amount of time until you want
     void addProcess(uint t, Process *p);
     
@@ -40,13 +43,6 @@ public:
     //Returns NULL if there is no new event
     //If this returns an event, a context swtich will start
     Event* getNextAction(uint t);
-    
-    //Functions used to get the Algo's stats
-    double getAvgCPUTime() const;
-    double getAvgWaitTime() const;
-    double getAvgTurnAroundTime() const;
-    uint getTotalNumPreemptions() const;
-    uint getNumContextSwitches() const;
 };
 
 

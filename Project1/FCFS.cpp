@@ -1,4 +1,3 @@
-//My includes
 #include "FCFS.hpp"
 
 
@@ -14,6 +13,9 @@ FCFS::FCFS() : Algo("FCFS") {
     //Initalize stats
     NumContextSwitches = 0;
 }
+
+//Destructor
+FCFS::~FCFS() {}
 
 //Notifies Algorithm of a new process
 void FCFS::addProcess(uint c_time, Process *p) {
@@ -80,32 +82,3 @@ Event* FCFS::getNextAction(uint t) {
     //Else, there is nothing to do
     else return NULL;
 }
-
-
-//------------------------Stats functions------------------------
-
-
-double FCFS::getAvgCPUTime() const {
-
-    //Variables
-    double k=0,ret=0;
-    
-    //For each Process
-    for(std::set<Process*>::const_iterator
-        i = AllProcesses.begin(); i != AllProcesses.end(); i++) {
-        
-        //Find how much CPU time was used and how many bursts occured
-        k += (*i)->getNumBursts(); ret += (*i)->getNumBursts()*(*i)->getCPUBurstTime();
-    }
-    
-    //Returns the answer
-    return ret/k;
-}
-
-//TODO:
-double FCFS::getAvgWaitTime() const {return 0;}
-double FCFS::getAvgTurnAroundTime() const {return 0;}
-
-
-uint FCFS::getNumContextSwitches() const { return NumContextSwitches; }
-uint FCFS::getTotalNumPreemptions() const { return 0; }

@@ -1,14 +1,8 @@
 #ifndef Event_hpp
 #define Event_hpp
 
-
-
-#include "PList.hpp"
-
-
-
-
 //My includes
+#include "PList.hpp"
 #include "Process.hpp"
 
 

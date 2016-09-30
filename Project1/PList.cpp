@@ -3,76 +3,81 @@
 
 
 //Constructor
-PList::PList() { constructorHelper(); }
+PList::PList() { Q = NULL; constructorHelper(); }
 
 //Prevent memory leaks
 PList::~PList() { for(uint i = 0; i < P.size(); i++) delete P[i]; delete Q; }
 
+//This function is seperate from the constructor
+//so that the function reset may call it as well.
 void PList::constructorHelper() {
     
-    Q = new PQueue;
-    numPreemptions = 0;
-    numContextSwitches = 0;
+    //Set Q = to a new Queue
+    delete Q; Q = new PQueue;
+    
+    //Reset Stats
+    numPreemptions = 0; numContextSwitches = 0;
     
 }
 
+//A function to be called to add a process to the simulation
+void PList::add(Process* p, bool runBefore) {
+
+    //Add it to the arrival queue
+    Q->push(p);
+    
+    //If the process has never arrived yet
+    if (!p->getNumBurstsDone()) {
+        
+        //Record the time it first arrives
+        TurnAroundTimes[p]=p->getTimeArrived()-t_cs/2;
+        
+        //If the process has never run before
+        if (!runBefore) P.push_back(p);
+    }
+}
+
+//Resets the simulation's stats and processes
 void PList::reset() {
     
     //Clear unneeded values
     WaitTimes.clear();
     TurnAroundTimes.clear();
-
-    //Reset each process
-    for(uint i = 0; i < P.size(); i++) P[i]->reset();
     
     //Reset defaults
     constructorHelper();
-}
-
-
-void PList::add(Process* p) {
-
-    Q->push(p);
     
-    //If the process has never arrived yet
-    if (!p->getNumBurstsDone()) {
-        P.push_back(p);
-        TurnAroundTimes[p]=p->getTimeArrived()-t_cs/2;
+    //For each process
+    for(uint i = 0; i < P.size(); i++) {
+        
+        //Reset it
+        P[i]->reset();
+        
+        //Add it to the default queue
+        this->add(P[i], true);
     }
 }
 
-
-//Adds p to the priority queue
-void PList::push(Process* p) { Q->push(p); }
-
-//Returns the size of the queue
-uint PList::size() const { return (uint)Q->size(); }
-
-//Returns Q.top()
-Process* PList::top() const { return Q->top(); }
-
-//Q.pop()
-void PList::pop() { Q->pop(); }
-
-
-
-
-#include<iostream>
+//A function called whenever an event is created
+//This functions is the method that this class collects the
+//information required to calculate the stats to be printed
 void PList::inform(Event *e) {
-    
-    if (Event::getTime() > 11000) {
-        int a = Event::getTime();
-        std::cout << a;
-    }
-    
+
+    //If the event Starts a CPU Burst
     if (e->Type == START_BURST) {
         
+        //Increment the number of context switches
         numContextSwitches++;
+        
+        //Record how much time the process was waiting
         WaitTimes.push_back(Event::getTime() - e->p->getTimeArrived());
     }
     
+    //If a preemption was requested, record it
     else if (e->Type == PAUSE_BURST) numPreemptions++;
     
+    //If a process is finishing it's last CPU burst, subtract the current
+    //time from the time it initially arrived to determine it's turn around time
     else if (e->Type == FINISH_BURST && e->p->getNumBursts() == 1+e->p->getNumBurstsDone())
         TurnAroundTimes[e->p] = Event::getTime() - TurnAroundTimes[e->p];
 }
@@ -110,3 +115,18 @@ void PList::printInfo(const char* n) const {
     printf("-- total number of context switches: %d\n", numContextSwitches);
     printf("-- total number of preemptions: %d\n",      numPreemptions);
 }
+
+
+//-------------------Priority Queue functions-------------------
+
+//Adds p to the priority queue
+void PList::push(Process* p) { Q->push(p); }
+
+//Returns the size of the queue
+uint PList::size() const { return (uint)Q->size(); }
+
+//Returns Q->top()
+Process* PList::top() const { return Q->top(); }
+
+//Q->pop()
+void PList::pop() { Q->pop(); }
