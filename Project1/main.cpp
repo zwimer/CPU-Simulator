@@ -238,9 +238,6 @@ int main(int argc, const char * argv[]) {
     
     //Run the RR algorithm
     //Simulate(new RR, p, "RR");
-
-    //Prevent memory leaks
-    delete p;
     
     //Success
     return EXIT_SUCCESS;
