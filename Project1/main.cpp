@@ -226,9 +226,14 @@ int main(int argc, const char * argv[]) {
     //Read in the file
     readIn(argv[1],p);
     
-    //Create an algorithm
-    FCFS A1;
-
+    //Run the FCFS algorithm
+    Simulate(new FCFS, p, "FCFS");
+    
+    //Run the SJF algorithm
+    //Simulate(new SJF, p, "SJF");
+    
+    //Run the RR algorithm
+    //Simulate(new RR, p, "RR");
     
     //Success
     return EXIT_SUCCESS;
