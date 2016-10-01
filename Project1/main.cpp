@@ -1,6 +1,7 @@
 //My includes
-#include "PList.hpp"
+#include "Time.hpp"
 #include "FCFS.hpp"
+#include "PList.hpp"
 
 //System includes
 #include <string>
@@ -13,8 +14,10 @@
 const uint m = 1;
 const uint t_cs = 8;
 
-//For debugging
-//#define DEBUG_MODE
+//Global time
+Time t;
+
+
 
 //------------------------Input Parsing------------------------
 

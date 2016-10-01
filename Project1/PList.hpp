@@ -1,15 +1,13 @@
 #ifndef PList_hpp
 #define PList_hpp
 
+//My includes
+#include "main.hpp"
+
 //System includes
 #include <map>
 #include <queue>
 #include <vector>
-
-
-//External global variables
-extern const unsigned int m;
-extern const unsigned int t_cs;
 
 
 //Forward declarations
