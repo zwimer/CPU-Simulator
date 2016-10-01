@@ -31,18 +31,18 @@ public:
     ~FCFS();
     
     //Returns the amount of time until you want
-    void addProcess(uint t, Process *p);
+    void addProcess(Process *p);
     
     //The algorithm will return an int specifying
     //the next time it wants to be notified of the time
     //Return's -1 is done, otherwise returns a positive number
-    int nextNotify(uint t) const;
+    int nextNotify() const;
     
     //Returns an event to do at time t
     //This will only be called at time t!
     //Returns NULL if there is no new event
     //If this returns an event, a context swtich will start
-    Event* getNextAction(uint t);
+    Event* getNextAction();
 };
 
 

@@ -58,21 +58,21 @@ void Process::reset() {
 
 
 //Begin IO
-void Process::BeginIO(uint t) {
+void Process::BeginIO() {
     
     //Error checking
     Assert(cState==READY_FOR_IO, "Can't begin IO");
     
     //Begin IO and record the time
-    TimeofIOBurst=t; cState=BLOCKED;
+    TimeofIOBurst=t.getTime(); cState=BLOCKED;
 }
 
 //Finish IO
-void Process::FinishIO(uint t) {
+void Process::FinishIO() {
     
     //Error checking
     Assert(cState==BLOCKED, "Process not blocked");
-    Assert(t==TimeofIOBurst+IOTime, "IO finished at the wrong time");
+    Assert(t.getTime()==TimeofIOBurst+IOTime, "IO finished at the wrong time");
     
     //FinishIO
     cState=READY;
@@ -80,35 +80,35 @@ void Process::FinishIO(uint t) {
 
 //Begin CPU burst
 //Explicitly accounts for context swtiching
-void Process::BeginCPUBurst(uint t) {
+void Process::BeginCPUBurst() {
     
     //Error checking
     Assert(cState==READY, "Process was not queued!");
     
     //Begin running and record the time
-    TimeofCPUBurst = t+t_cs/2; cState = RUNNING;
+    TimeofCPUBurst = t.getTime()+t_cs/2; cState = RUNNING;
 }
 
 //Context switch out of CPU burst
 //Implicitly accounts for context swtiching
-void Process::PauseCPUBurst(uint t) {
+void Process::PauseCPUBurst() {
     
     //Error checking
     Assert(cState == RUNNING, "Process never ran!");
-    Assert(t<TimeofCPUBurst+CPUBurstTime, "CPU paused when it should have ended");
-    Assert(t>=TimeofCPUBurst, "Error, t < Time of this CPU burst");
+    Assert(t.getTime()<TimeofCPUBurst+CPUBurstTime, "CPU paused when it should have ended");
+    Assert(t.getTime()>=TimeofCPUBurst, "Error, t < Time of this CPU burst");
     
     //Record current CPU time and set state to ready
-    Time_In_CPUBurst+=t-TimeofCPUBurst; cState=READY;
+    Time_In_CPUBurst+=t.getTime()-TimeofCPUBurst; cState=READY;
 }
 
 //Finish CPU burst
 //Implicitly accounts for context swtiching
-void Process::FinishCPUBurst(uint t) {
+void Process::FinishCPUBurst() {
     
     //Error checking
     Assert(cState == RUNNING, "Process never ran!");
-    Assert(t+Time_In_CPUBurst==TimeofCPUBurst+CPUBurstTime, "CPU finished at the wrong time");
+    Assert(t.getTime()+Time_In_CPUBurst==TimeofCPUBurst+CPUBurstTime, "CPU finished at the wrong time");
     
     //If the process is completely dones, note so
     if (++NumberCPUDone==numBursts) cState=DONE;
@@ -163,25 +163,25 @@ uint Process::getTimeArrived() const {
 
 
 //Return turn around time
-uint Process::getTurnAroundTime(uint current_time) const {
+uint Process::getTurnAroundTime() const {
     
     //Assert that the process is dead
     Assert(getDone(),
            "Error, can't get wait time from living process");
     
     //Assert this wasn't used in error.
-    Assert(current_time >= TimeArrived,
+    Assert(t.getTime() >= TimeArrived,
            "Error, process finished before it arrived");
     
     //Return the answer
-    return current_time - TimeArrived;
+    return t.getTime() - TimeArrived;
 }
 
 //Return get wait time
-uint Process::getWaitTime(uint current_time) const {
+uint Process::getWaitTime() const {
     
     //Error checking done in getTurnAroundTime
-    uint ret = getTurnAroundTime(current_time);
+    uint ret = getTurnAroundTime();
     
     //Make sure the math makes sense
     Assert(ret >= CPUBurstTime*numBursts+IOTime*(numBursts-1),

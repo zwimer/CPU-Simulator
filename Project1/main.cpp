@@ -1,7 +1,10 @@
 //My includes
-#include "Time.hpp"
-#include "FCFS.hpp"
 #include "PList.hpp"
+
+//Include the algorithms
+#include "RR.hpp"
+#include "SJF.hpp"
+#include "FCFS.hpp"
 
 //System includes
 #include <string>
@@ -16,7 +19,6 @@ const uint t_cs = 8;
 
 //Global time
 Time t;
-
 
 
 //------------------------Input Parsing------------------------
@@ -69,13 +71,13 @@ void readIn(const std::string& FileName, PList* p) {
 //--------------------Simulator helper functions--------------------
 
 
-void AddArrivals(PList* ToArrive, Algo& A, const int t) {
+void AddArrivals(PList* ToArrive, Algo& A) {
     
     //If there are any processes yet to arrive
     while (ToArrive->size())
         
         //For each processes that is starting now
-        if ( ToArrive->top()->getTimeArrived() == (uint)t ) {
+        if ( ToArrive->top()->getTimeArrived() == (uint)t.getTime() ) {
         
 #ifdef DEBUG_MODE
             //If debugging, print arriving processes
@@ -83,10 +85,10 @@ void AddArrivals(PList* ToArrive, Algo& A, const int t) {
 #endif
             
             //Mark IO completed if necessary
-            if (ToArrive->top()->getInIO()) ToArrive->top()->FinishIO(t);
+            if (ToArrive->top()->getInIO()) ToArrive->top()->FinishIO();
             
             //Tell the Algorithm
-            A.addProcess(t, ToArrive->top());
+            A.addProcess(ToArrive->top());
             
             //Remove the process from the list
             ToArrive->pop();
@@ -94,7 +96,7 @@ void AddArrivals(PList* ToArrive, Algo& A, const int t) {
 }
 
 //This function simply processes each event
-void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse, const int t) {
+void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse) {
     
 #ifdef DEBUG_MODE
     //If debugging, print out important events
@@ -110,35 +112,35 @@ void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse, const 
         //If we need to have a process finish using the CPU, do so
         case FINISH_BURST:
             Assert(CPUInUse==NextAction->p, "This process was not in the CPU");
-            NextAction->p->FinishCPUBurst(t); CPUInUse=NULL;
+            NextAction->p->FinishCPUBurst(); CPUInUse=NULL;
             
             //If the process needs to start IO, do so
             if (!NextAction->p->getDone()) {
-                NextAction->p->BeginIO(t);
+                NextAction->p->BeginIO();
                 ToArrive->push(NextAction->p);
             } break;
             
         //If we need to have a process begin context swith from the CPU, do so
         case PAUSE_BURST:
             Assert(CPUInUse, "This process was not in the CPU");
-            NextAction->p->PauseCPUBurst(t); CPUInUse=0; break;
+            NextAction->p->PauseCPUBurst(); CPUInUse=0; break;
             
         //If we need to have a process begin a CPU burst, do so
         case START_BURST:
             Assert(!CPUInUse, "Another process is using the CPU");
-            NextAction->p->BeginCPUBurst(t); CPUInUse=NextAction->p;
+            NextAction->p->BeginCPUBurst(); CPUInUse=NextAction->p;
             
     }
 }
 
 //This functions returns the next time something interesting should occur
-int getNextImportantTime(PList* ToArrive, Algo& A, const int t, Event* NextAction) {
+int getNextImportantTime(PList* ToArrive, Algo& A, Event* NextAction) {
     
     //Set t to the next time that something important happens
     //This will either be when the algorithim determines
     //that something important will happen, or when a new
     //process arrives which the algorithm needs to know about
-    int Option1 = A.nextNotify(t);
+    int Option1 = A.nextNotify();
     
     //Ignore the alogirthm until the context switch is done
     if (NextAction) Option1 = Option1>(int)t_cs/2?Option1:(int)t_cs/2;
@@ -167,9 +169,6 @@ int getNextImportantTime(PList* ToArrive, Algo& A, const int t, Event* NextActio
 //Actually run the algorithm
 void RunAlgo(PList* ToArrive, Algo& A) {
     
-    //An int representing time
-    int* t = Event::getTimePtr();
-    
     //The ProcID of the process using the CPU (0 if none)
     Process* CPUInUse = NULL;
     
@@ -177,19 +176,19 @@ void RunAlgo(PList* ToArrive, Algo& A) {
     Event* NextAction;
     
     //Repeat while the alorithm is not done
-    while (*t != -1) {
+    while (t.getTime() != -1) {
 
         //Add new processes
-        AddArrivals(ToArrive, A, *t);
+        AddArrivals(ToArrive, A);
         
         //Get the list of events to do now
-        NextAction = A.getNextAction(*t);
+        NextAction = A.getNextAction();
 
         //Process the event if there is one
-        if (NextAction) ProcessEvent(NextAction, ToArrive, CPUInUse, *t);
+        if (NextAction) ProcessEvent(NextAction, ToArrive, CPUInUse);
 
         //Get the next important time
-        *t = getNextImportantTime(ToArrive, A, *t, NextAction);
+        t.setTime(getNextImportantTime(ToArrive, A, NextAction));
         
         //Delete the finished event
         delete NextAction;

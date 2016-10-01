@@ -62,19 +62,19 @@ public:
     //----------------------Change cState----------------------
     
     //Begin IO
-    void BeginIO(uint t);
+    void BeginIO();
     
     //Finish IO
-    void FinishIO(uint t);
+    void FinishIO();
     
     //Begin CPU burst
-    void BeginCPUBurst(uint t);
+    void BeginCPUBurst();
     
     //Context switch out of CPU burst
-    void PauseCPUBurst(uint t);
+    void PauseCPUBurst();
     
     //Finish CPU burst
-    void FinishCPUBurst(uint t);
+    void FinishCPUBurst();
     
     //------------------------Getters------------------------
     
@@ -103,10 +103,10 @@ public:
     //------------------------Get times------------------------
     
     //Return turn around time
-    uint getTurnAroundTime(uint current_time) const;
+    uint getTurnAroundTime() const;
     
     //Return get wait time
-    uint getWaitTime(uint current_time) const;
+    uint getWaitTime() const;
     
 };
 

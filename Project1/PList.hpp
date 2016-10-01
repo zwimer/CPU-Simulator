@@ -2,12 +2,20 @@
 #define PList_hpp
 
 //My includes
-#include "main.hpp"
+#include "Time.hpp"
 
 //System includes
 #include <map>
 #include <queue>
 #include <vector>
+
+
+//Global time variable
+extern Time t;
+
+//External global variables
+extern const unsigned int m;
+extern const unsigned int t_cs;
 
 
 //Forward declarations

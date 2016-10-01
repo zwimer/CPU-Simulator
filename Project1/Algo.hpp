@@ -23,7 +23,7 @@ public:
     //Notifies Algorithm of a new process
     //'New processes' include processes that
     //just finished IO and need another CPU burst
-    virtual void addProcess(uint t, Process *p) = 0;
+    virtual void addProcess(Process *p) = 0;
     
     //The algorithm will return a uint specifying
     //the next time it wants to be notified of the time
@@ -31,12 +31,12 @@ public:
     //Note, the Algorithm sub-classes must be aware that the simulation
     //implements context switching! The algorithm must account for this!
     //Half of a context switch of of time t_cs/2 will occur after each event!
-    virtual int nextNotify(uint t) const = 0;
+    virtual int nextNotify() const = 0;
     
     //This function will ONLY be called once per any t
     //It is allowed to modify it's internal state if it wishes
     //Returns a list of events the computer must do by putting it in V
-    virtual Event* getNextAction(uint t) = 0;
+    virtual Event* getNextAction() = 0;
 };
 
 #endif /* Algo_hpp */

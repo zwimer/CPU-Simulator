@@ -18,7 +18,7 @@ FCFS::FCFS() : Algo() {
 FCFS::~FCFS() {}
 
 //Notifies Algorithm of a new process
-void FCFS::addProcess(uint c_time, Process *p) {
+void FCFS::addProcess(Process *p) {
     
     //Add the new process to the queue
     Queued.push_back(p);
@@ -31,7 +31,7 @@ void FCFS::addProcess(uint c_time, Process *p) {
 //The algorithm will return a uint specifying
 //the next time it wants to be notified of the time
 //Return's -1 is done, otherwise returns a positive number
-int FCFS::nextNotify(uint t) const {
+int FCFS::nextNotify() const {
     
     //If there is nothing to do, return -1
     if (!Queued.size()) return -1;
@@ -45,26 +45,26 @@ int FCFS::nextNotify(uint t) const {
 }
 
 //Returns a list of events the computer must do by putting it in V
-Event* FCFS::getNextAction(uint t) {
+Event* FCFS::getNextAction() {
 
     //If there is nothing to do, do nothing
     if (!Queued.size()) return NULL;
 
     //If no process is running, and no context swtich is happening
-    else if (!ProcessRunning && t >= FinishContextSwitch) {
+    else if (!ProcessRunning && t.getTime() >= FinishContextSwitch) {
         
         //Note that the process has started
         ProcessRunning = true;
         
         //Start a half context switch
-        FinishContextSwitch = t + t_cs/2;
+        FinishContextSwitch = t.getTime() + t_cs/2;
         
         //Start the new process
         return new Event(START_BURST, Queued.front());
     }
     
     //If there is a process running and it jsut finished
-    else if (ProcessRunning && t == Queued.front()->getFinishCPUTime()) {
+    else if (ProcessRunning && t.getTime() == Queued.front()->getFinishCPUTime()) {
         
         //Record which process has ended
         Process* tmp = Queued.front();
@@ -73,7 +73,7 @@ Event* FCFS::getNextAction(uint t) {
         ProcessRunning = false; Queued.pop_front();
         
         //Start a half context switch
-        FinishContextSwitch = t + t_cs/2;
+        FinishContextSwitch = t.getTime() + t_cs/2;
         
         //Finish the process
         return new Event(FINISH_BURST, tmp);
