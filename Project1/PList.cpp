@@ -69,7 +69,7 @@ void PList::inform(Event *e) {
         numContextSwitches++;
         
         //Record how much time the process was waiting
-        WaitTimes.push_back(Event::getTime() - e->p->getTimeArrived());
+        WaitTimes.push_back(t.getTime() - e->p->getTimeArrived());
     }
     
     //If a preemption was requested, record it
@@ -78,7 +78,7 @@ void PList::inform(Event *e) {
     //If a process is finishing it's last CPU burst, subtract the current
     //time from the time it initially arrived to determine it's turn around time
     else if (e->Type == FINISH_BURST && e->p->getNumBursts() == 1+e->p->getNumBurstsDone())
-        TurnAroundTimes[e->p] = Event::getTime() - TurnAroundTimes[e->p];
+        TurnAroundTimes[e->p] = t.getTime() - TurnAroundTimes[e->p];
 }
 
 
