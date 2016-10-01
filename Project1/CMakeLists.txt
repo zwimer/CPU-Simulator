@@ -3,6 +3,7 @@ project(Project1)
 
 add_executable(a.out
 	main.cpp
+	Time.cpp
 	PList.cpp
 	Process.cpp
 	Event.cpp
