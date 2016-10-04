@@ -96,7 +96,10 @@ void AddArrivals(PList* ToArrive, Algo& A) {
 }
 
 //This function simply processes each event
-void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse) {
+//This function returns false if everything completed successfully
+//This function returns true if a process with 0 IO time finished
+//its non-final burst. If so, the simulation must run again at time t
+bool ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse) {
     
 #ifdef DEBUG_MODE
     //If debugging, print out important events
@@ -118,6 +121,16 @@ void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse) {
             if (!NextAction->p->getDone()) {
                 NextAction->p->BeginIO();
                 ToArrive->push(NextAction->p);
+                
+                //If the process has no IO time
+                if (!NextAction->p->getIOTIME()) {
+                    
+                    //Created solely for statistics
+                    Event tmp(FINISH_BURST, NextAction->p);
+                    
+                    //The simulation must run again at time t
+                    return true;
+                }
             } break;
             
         //If we need to have a process begin context swith from the CPU, do so
@@ -131,10 +144,14 @@ void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse) {
             NextAction->p->BeginCPUBurst(); CPUInUse=NextAction->p;
             
     }
+    
+    //Everything finished without a problem
+    return false;
 }
 
 //This functions returns the next time something interesting should occur
-int getNextImportantTime(PList* ToArrive, Algo& A, Event* NextAction) {
+int getNextImportantTime(PList* ToArrive, Algo& A,
+                         Event* NextAction) {
     
     //Set t to the next time that something important happens
     //This will either be when the algorithim determines
@@ -169,6 +186,14 @@ int getNextImportantTime(PList* ToArrive, Algo& A, Event* NextAction) {
 //Actually run the algorithm
 void RunAlgo(PList* ToArrive, Algo& A) {
     
+    //If this is ever false, that means that a process
+    //with 0 IO time finished a CPU burst. As such, it
+    //Must be added back to the ready queue again. This
+    //acts as a flag that tells the simulation not to
+    //update time. That way, the simulation can process
+    //this process that is ready to be added once more.
+    bool changeTime = true;
+    
     //The ProcID of the process using the CPU (0 if none)
     Process* CPUInUse = NULL;
     
@@ -184,11 +209,24 @@ void RunAlgo(PList* ToArrive, Algo& A) {
         //Get the list of events to do now
         NextAction = A.getNextAction();
 
-        //Process the event if there is one
-        if (NextAction) ProcessEvent(NextAction, ToArrive, CPUInUse);
+        //If there is an event
+        if (NextAction)
+            
+            //Process it. If there was an error
+            if (ProcessEvent(NextAction, ToArrive, CPUInUse))
+                
+                //Do not change the time for the next run of the
+                //simulation. This will allow the next run to fix it.
+                changeTime = false;
 
-        //Get the next important time
-        t.setTime(getNextImportantTime(ToArrive, A, NextAction));
+        //If there were no problems with processing
+        if (changeTime)
+            
+            //Get the next important time
+            t.setTime(getNextImportantTime(ToArrive, A, NextAction));
+        
+        //Otherwise, reset changeTime
+        else changeTime = true;
         
         //Delete the finished event
         delete NextAction;

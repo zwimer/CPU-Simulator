@@ -33,7 +33,7 @@ public:
     //Half of a context switch of of time t_cs/2 will occur after each event!
     virtual int nextNotify() const = 0;
     
-    //This function will ONLY be called once per any t
+    //After this function is called, 
     //It is allowed to modify it's internal state if it wishes
     //Returns a list of events the computer must do by putting it in V
     virtual Event* getNextAction() = 0;
