@@ -30,7 +30,7 @@ Process::Process(char a, uint b, uint c, uint d, uint e) : ProcId(a),
 TimeArrived(b), CPUBurstTime(c), numBursts(d), IOTime(e) {
     
     //The CPU has yet to start this process
-    NumberCPUDone = 0; Time_In_CPUBurst = 0;
+    NumberCPUDone = 0; Time_In_CPUBurst = 0; LastIODone = 0;
     
     //But as soon as it arrives, it is placed in the queue
     cState = READY;
@@ -72,7 +72,10 @@ void Process::FinishIO() {
     
     //Error checking
     Assert(cState==BLOCKED, "Process not blocked");
-    Assert(t.getTime()==TimeofIOBurst+IOTime, "IO finished at the wrong time");
+    
+    char tmp[100]; sprintf(tmp, "%c IO finished at the wrong time %d", ProcId, t.getTime());
+    
+    Assert(t.getTime()==TimeofIOBurst+IOTime, tmp);
     
     //FinishIO
     cState=READY;
@@ -133,12 +136,6 @@ uint Process::getNumBurstsDone() const { return NumberCPUDone; }
 //This function assume no preemption! It is the process' guess
 bool Process::getWillBeDoneNext() const { return NumberCPUDone+1==numBursts; }
 
-//Returns when
-uint Process::getIOFinishTime() const {
-    Assert(cState==BLOCKED, "Error, no IO occuring");
-    return TimeofIOBurst+IOTime;
-}
-
 //Returns the estimated time this process will exit the CPU
 //This function assume no preemption! It is the processes guess
 //This function implicitly accounts for context swtiching.
@@ -154,12 +151,19 @@ uint Process::getFinishCPUTime() const {
 uint Process::getTimeArrived() const {
     Assert(cState!=DONE, "Process is not in arrival queue");
     Assert(cState!=RUNNING, "Process is not in arrival queue");
-    if (NumberCPUDone) return TimeofIOBurst+IOTime;
+    
+    //If IOTime needs to be accounted for
+    if (NumberCPUDone)
+        
+        //Add whatever is greater, IOTime or context switch time
+        return TimeofIOBurst+IOTime>t_cs?IOTime:t_cs;
+    
+    //Return initial arrival time
     return TimeArrived;
 }
 
 
-//-----------------------------Get times-----------------------------
+//---------------------------Get time stats---------------------------
 
 
 //Return turn around time
@@ -200,4 +204,4 @@ uint Process::getWaitTime() const {
 //Returns true if a > b
 //Sorts by time arrived
 bool ProcessCompare::operator() (const Process* a, const Process* b)
-{return a->getTimeArrived() > b->getTimeArrived();}
+{ return a->getTimeArrived() > b->getTimeArrived(); }

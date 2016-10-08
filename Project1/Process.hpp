@@ -40,7 +40,8 @@ private:
     //The current state
     enum PState cState;
     
-    //Variables meant to timekeep bursts
+    //Variables meant to timekeep
+    uint LastIODone;
     uint TimeofIOBurst;
     uint TimeofCPUBurst;
     uint Time_In_CPUBurst;
@@ -83,7 +84,6 @@ public:
     char getProcID() const;
     uint getIOTIME() const;
     uint getNumBursts() const;
-    uint getIOFinishTime() const;
     uint getCPUBurstTime() const;
     uint getNumBurstsDone() const;
     
@@ -100,14 +100,14 @@ public:
     //This function explicitly accounts for context swtiching.
     uint getTimeArrived() const;
     
-    //------------------------Get times------------------------
+    //----------------------Get time stats----------------------
     
     //Return turn around time
     uint getTurnAroundTime() const;
     
     //Return get wait time
     uint getWaitTime() const;
-    
+
 };
 
 //A class whose sole purpose is to compare Processes by TimeArrived

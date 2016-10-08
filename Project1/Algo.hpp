@@ -35,7 +35,8 @@ public:
     
     //After this function is called, 
     //It is allowed to modify it's internal state if it wishes
-    //Returns a list of events the computer must do by putting it in V
+    //Important: The algorithm can assume that any Event returned from is
+    //started immediatly afterwards, thus can make the Event as completed
     virtual Event* getNextAction() = 0;
 };
 

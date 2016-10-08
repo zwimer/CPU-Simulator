@@ -19,7 +19,7 @@ const uint t_cs = 8;
 
 //Global time
 Time t;
-
+#define DEBUG_MODE
 
 //------------------------Input Parsing------------------------
 
@@ -77,11 +77,11 @@ void AddArrivals(PList* ToArrive, Algo& A) {
     while (ToArrive->size())
         
         //For each processes that is starting now
-        if ( ToArrive->top()->getTimeArrived() == (uint)t.getTime() ) {
+        if ( ToArrive->top()->getTimeArrived() == (uint)t.getTime()) {
         
 #ifdef DEBUG_MODE
             //If debugging, print arriving processes
-            std::cout << "-Arrive: " << ToArrive->top()->getProcID() << " at\t"<< t << '\n';
+            std::cout << "-Arrive: " << ToArrive->top()->getProcID() << " at\t"<< t.getTime() << '\n';
 #endif
             
             //Mark IO completed if necessary
@@ -96,16 +96,13 @@ void AddArrivals(PList* ToArrive, Algo& A) {
 }
 
 //This function simply processes each event
-//This function returns false if everything completed successfully
-//This function returns true if a process with 0 IO time finished
-//its non-final burst. If so, the simulation must run again at time t
-bool ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse) {
+void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse, Algo& A) {
     
 #ifdef DEBUG_MODE
     //If debugging, print out important events
     if (NextAction->Type == START_BURST) std::cout << "-Start:\t ";
     if (NextAction->Type == FINISH_BURST) std::cout << "-End:\t ";
-    std::cout << NextAction->p->getProcID() << " at\t"<< t << '\n';
+    std::cout << NextAction->p->getProcID() << " at\t"<< t.getTime() << '\n';
     if (NextAction->Type == FINISH_BURST) std::cout << '\n';
 #endif
     
@@ -121,16 +118,6 @@ bool ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse) {
             if (!NextAction->p->getDone()) {
                 NextAction->p->BeginIO();
                 ToArrive->push(NextAction->p);
-                
-                //If the process has no IO time
-                if (!NextAction->p->getIOTIME()) {
-                    
-                    //Created solely for statistics
-                    Event tmp(FINISH_BURST, NextAction->p);
-                    
-                    //The simulation must run again at time t
-                    return true;
-                }
             } break;
             
         //If we need to have a process begin context swith from the CPU, do so
@@ -144,14 +131,10 @@ bool ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse) {
             NextAction->p->BeginCPUBurst(); CPUInUse=NextAction->p;
             
     }
-    
-    //Everything finished without a problem
-    return false;
 }
 
 //This functions returns the next time something interesting should occur
-int getNextImportantTime(PList* ToArrive, Algo& A,
-                         Event* NextAction) {
+int getNextImportantTime(PList* ToArrive, Algo& A, uint InContextSwitchUntil) {
     
     //Set t to the next time that something important happens
     //This will either be when the algorithim determines
@@ -160,7 +143,8 @@ int getNextImportantTime(PList* ToArrive, Algo& A,
     int Option1 = A.nextNotify();
     
     //Ignore the alogirthm until the context switch is done
-    if (NextAction) Option1 = Option1>(int)t_cs/2?Option1:(int)t_cs/2;
+    if (t.getTime() < InContextSwitchUntil)
+        Option1 = Option1>(int)t_cs/2?Option1:(int)t_cs/2;
     
     //If a process has yet to arrive
     if (ToArrive->size()) {
@@ -186,19 +170,14 @@ int getNextImportantTime(PList* ToArrive, Algo& A,
 //Actually run the algorithm
 void RunAlgo(PList* ToArrive, Algo& A) {
     
-    //If this is ever false, that means that a process
-    //with 0 IO time finished a CPU burst. As such, it
-    //Must be added back to the ready queue again. This
-    //acts as a flag that tells the simulation not to
-    //update time. That way, the simulation can process
-    //this process that is ready to be added once more.
-    bool changeTime = true;
-    
     //The ProcID of the process using the CPU (0 if none)
     Process* CPUInUse = NULL;
     
     //Create an Event*
     Event* NextAction;
+    
+    //An int for storing when the next process switch ends
+    uint InContextSwitchUntil = 0;
     
     //Repeat while the alorithm is not done
     while (t.getTime() != -1) {
@@ -210,23 +189,17 @@ void RunAlgo(PList* ToArrive, Algo& A) {
         NextAction = A.getNextAction();
 
         //If there is an event
-        if (NextAction)
+        if (NextAction) {
             
-            //Process it. If there was an error
-            if (ProcessEvent(NextAction, ToArrive, CPUInUse))
-                
-                //Do not change the time for the next run of the
-                //simulation. This will allow the next run to fix it.
-                changeTime = false;
-
-        //If there were no problems with processing
-        if (changeTime)
+            //Process it
+            ProcessEvent(NextAction, ToArrive, CPUInUse, A);
             
-            //Get the next important time
-            t.setTime(getNextImportantTime(ToArrive, A, NextAction));
+            //Note that a context swtich is happening
+            InContextSwitchUntil = t.getTime() + t_cs/2;
+        }
         
-        //Otherwise, reset changeTime
-        else changeTime = true;
+        //Get the next important time
+        t.setTime(getNextImportantTime(ToArrive, A, InContextSwitchUntil));
         
         //Delete the finished event
         delete NextAction;
