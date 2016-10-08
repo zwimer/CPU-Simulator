@@ -8,6 +8,7 @@ class PList;
 
 //Small time class. The reason this is a
 //class is to prevent accidental changes of t
+//Note, t2 is just the previous time, used only when t = -1
 class Time {
 public:
     
@@ -16,6 +17,7 @@ public:
     
     //Functions
     const int getTime() const;
+    const int getLastTime() const;
     
 private:
     
@@ -26,7 +28,9 @@ private:
     void setTime(int a);
     
     //Representation
-    int t;
+    int t, t2;
+    
+    //Statics for error checking
     static int numTime;
 };
 

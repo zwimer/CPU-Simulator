@@ -41,7 +41,6 @@ private:
     enum PState cState;
     
     //Variables meant to timekeep
-    uint LastIODone;
     uint TimeofIOBurst;
     uint TimeofCPUBurst;
     uint Time_In_CPUBurst;

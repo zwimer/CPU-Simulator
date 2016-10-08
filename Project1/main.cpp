@@ -19,7 +19,6 @@ const uint t_cs = 8;
 
 //Global time
 Time t;
-#define DEBUG_MODE
 
 //------------------------Input Parsing------------------------
 
@@ -77,7 +76,7 @@ void AddArrivals(PList* ToArrive, Algo& A) {
     while (ToArrive->size())
         
         //For each processes that is starting now
-        if ( ToArrive->top()->getTimeArrived() == (uint)t.getTime()) {
+        if ( ToArrive->top()->getTimeArrived() == (uint)t.getTime() ) {
         
 #ifdef DEBUG_MODE
             //If debugging, print arriving processes
@@ -143,8 +142,8 @@ int getNextImportantTime(PList* ToArrive, Algo& A, uint InContextSwitchUntil) {
     int Option1 = A.nextNotify();
     
     //Ignore the alogirthm until the context switch is done
-    if (t.getTime() < InContextSwitchUntil)
-        Option1 = Option1>(int)t_cs/2?Option1:(int)t_cs/2;
+    if (t.getTime() < InContextSwitchUntil && Option1 != -1)
+        Option1 = Option1>(int)(t.getTime()+t_cs)/2?Option1:(int)(t.getTime()+t_cs/2);
     
     //If a process has yet to arrive
     if (ToArrive->size()) {
