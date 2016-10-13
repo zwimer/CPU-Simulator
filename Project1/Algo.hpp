@@ -20,6 +20,12 @@ public:
     //The destructor
     virtual ~Algo() = 0;
     
+    //A function that returns the queue as
+    //a string meant for printing. Must return
+    //a string in the form "[Q A B C]\n" where A, B, C
+    //are the process IDs of the processes in the queue
+    virtual void printQ() const = 0;
+    
     //Notifies Algorithm of a new process
     //'New processes' include processes that
     //just finished IO and need another CPU burst

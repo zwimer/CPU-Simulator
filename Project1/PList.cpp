@@ -83,7 +83,7 @@ void PList::inform(Event *e) {
 
 
 //Print info
-void PList::printInfo(const char* n) const {
+void PList::recordStats(const char* n) {
     
     //Iterators
     uint i; std::map<Process*, int>::const_iterator k;
@@ -107,13 +107,16 @@ void PList::printInfo(const char* n) const {
     avgTurnAroundTime/=TurnAroundTimes.size();
     
     //Print the information in the format requested
-    printf("Algorithm %s\n", n);
-    printf("-- average CPU burst time: %0.2lf ms\n",    avgCPUTime);
-    printf("-- average wait time: %0.2lf ms\n",         avgWaitTime);
-    printf("-- average turnaround time: %0.2lf ms\n",   avgTurnAroundTime);
-    printf("-- total number of context switches: %d\n", numContextSwitches);
-    printf("-- total number of preemptions: %d\n",      numPreemptions);
+    GatheredStats << "Algorithm %s\n" << n;
+    GatheredStats << "-- average CPU burst time: %0.2lf ms\n"    << avgCPUTime;
+    GatheredStats << "-- average wait time: %0.2lf ms\n"         << avgWaitTime;
+    GatheredStats << "-- average turnaround time: %0.2lf ms\n"   << avgTurnAroundTime;
+    GatheredStats << "-- total number of context switches: %d\n" << numContextSwitches;
+    GatheredStats << "-- total number of preemptions: %d\n"      << numPreemptions;
 }
+
+//Prints the stats gathered
+void PList::printInfo() const { std::cout << GatheredStats.str(); }
 
 
 //-------------------Priority Queue functions-------------------

@@ -30,6 +30,9 @@ public:
     //Destructor
     ~FCFS();
     
+    //Get the current queue
+    void printQ() const;
+    
     //Returns the amount of time until you want
     void addProcess(Process *p);
     

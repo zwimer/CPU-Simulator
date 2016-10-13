@@ -8,6 +8,8 @@
 #include <map>
 #include <queue>
 #include <vector>
+#include <sstream>
+#include <iostream>
 
 
 //Global time variable
@@ -40,6 +42,7 @@ private:
     //Representation:
     PQueue* Q;
     std::vector<Process*> P;
+    std::ostringstream GatheredStats;
     
     //Record stats
     int numPreemptions;
@@ -68,12 +71,19 @@ public:
     //something important has occured
     void inform(Event* e);
     
-    //A function used to print this algorithm's stats
+    //A function used to record the stat info
+    //for the algorithm with name n. This info
+    //is later printed by the printInfo function
+    void recordStats(const char *n);
+    
+    //A function used to print the stats collected before
     //Note, this function truncates to two decimal places
-    void printInfo(const char* n) const;
+    void printInfo() const;
+    
     
     //-------------------Priority Queue functions-------------------
 
+    
     //Adds p to the priority queue
     void push(Process* p);
     

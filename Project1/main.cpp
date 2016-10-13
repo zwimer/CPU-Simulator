@@ -72,22 +72,30 @@ void readIn(const std::string& FileName, PList* p) {
 
 void AddArrivals(PList* ToArrive, Algo& A) {
     
+    //A temporary boolean used to remember
+    //whether the processes just finished IO or not
+    bool WasInIO;
+    
     //If there are any processes yet to arrive
     while (ToArrive->size())
         
         //For each processes that is starting now
         if ( ToArrive->top()->getTimeArrived() == (uint)t.getTime() ) {
-        
-#ifdef DEBUG_MODE
-            //If debugging, print arriving processes
-            std::cout << "-Arrive: " << ToArrive->top()->getProcID() << " at\t"<< t.getTime() << '\n';
-#endif
             
             //Mark IO completed if necessary
-            if (ToArrive->top()->getInIO()) ToArrive->top()->FinishIO();
+            //and remember wheather or not it was
+            if ((WasInIO = ToArrive->top()->getInIO())) ToArrive->top()->FinishIO();
             
             //Tell the Algorithm
             A.addProcess(ToArrive->top());
+            
+            //If the process has never arrived, print info
+            if (WasInIO) { std::cout << "time " << t.getTime() << "ms: Process "
+                <<ToArrive->top()->getProcID() << " completed I/O "; A.printQ(); }
+
+            //If the process has never arrived, print info
+            else { std::cout << "time " << t.getTime() << "ms: Process "
+                <<ToArrive->top()->getProcID() << " arrived "; A.printQ(); }
             
             //Remove the process from the list
             ToArrive->pop();
@@ -208,6 +216,9 @@ void RunAlgo(PList* ToArrive, Algo& A) {
 //A tiny function to run the full simulation
 inline void Simulate(Algo *A, PList *p, const char* n) {
     
+    //Print info
+    std::cout << "time 0ms: Simulator started for " << n << " [Q empty]\n";
+    
     //The number of times
     //the simulation has run
     static uint numSim = 0;
@@ -219,7 +230,7 @@ inline void Simulate(Algo *A, PList *p, const char* n) {
     RunAlgo(p, *A);
     
     //Print Stats
-    p->printInfo("FCFS");
+    p->recordStats(n);
     
     //Delete the algorithm
     delete A;

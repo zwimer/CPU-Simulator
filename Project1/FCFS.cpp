@@ -17,6 +17,32 @@ FCFS::FCFS() : Algo() {
 //Destructor
 FCFS::~FCFS() {}
 
+//Returns a string representing the current ready queue
+void FCFS::printQ() const {
+    
+    //Create the string to be returned
+    std::cout << "[Q";
+    
+    //If there are processes in the queue
+    if (Queued.size()) {
+        
+        //For each process in the queue
+        for(std::list<Process*>::const_iterator
+            i = Queued.begin(); i != Queued.end(); i++)
+            
+            //If the first process in the queue is running, skip it
+            //Otherwise, print the process ID of the next ready process
+            if (!ProcessRunning || i != Queued.begin())
+                std::cout << " " << (*i)->getProcID();
+    }
+
+    //If there are no processes in the queue, say so
+    else std::cout << " empty";
+    
+    //Finish printing
+    std::cout << "]\n";
+}
+
 //Notifies Algorithm of a new process
 void FCFS::addProcess(Process *p) {
     
