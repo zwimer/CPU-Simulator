@@ -2,7 +2,14 @@
 
 
 //Constructor
-PList::PList() { Q = NULL; constructorHelper(); }
+PList::PList() {
+    
+    //Set decimal precision
+    GatheredStats.precision(2);
+    
+    //Construct the rest of the object
+    Q = NULL; constructorHelper();
+}
 
 //Prevent memory leaks
 PList::~PList() { for(uint i = 0; i < P.size(); i++) delete P[i]; delete Q; }
@@ -107,16 +114,16 @@ void PList::recordStats(const char* n) {
     avgTurnAroundTime/=TurnAroundTimes.size();
     
     //Print the information in the format requested
-    GatheredStats << "Algorithm %s\n" << n;
-    GatheredStats << "-- average CPU burst time: %0.2lf ms\n"    << avgCPUTime;
-    GatheredStats << "-- average wait time: %0.2lf ms\n"         << avgWaitTime;
-    GatheredStats << "-- average turnaround time: %0.2lf ms\n"   << avgTurnAroundTime;
-    GatheredStats << "-- total number of context switches: %d\n" << numContextSwitches;
-    GatheredStats << "-- total number of preemptions: %d\n"      << numPreemptions;
+    GatheredStats << "Algorithm " << n;
+    GatheredStats << "\n-- average CPU burst time: " << std::fixed  << avgCPUTime <<" ms";
+    GatheredStats << "\n-- average wait time: "      << std::fixed  << avgWaitTime <<" ms";
+    GatheredStats << "\n-- average turnaround time: " << std::fixed << avgTurnAroundTime << " ms";
+    GatheredStats << "\n-- total number of context switches: "  << numContextSwitches;
+    GatheredStats << "\n-- total number of preemptions: "       << numPreemptions << "\n";
 }
 
 //Prints the stats gathered
-void PList::printInfo() const { std::cout << GatheredStats.str(); }
+void PList::printStats() const { std::cout << GatheredStats.str(); }
 
 
 //-------------------Priority Queue functions-------------------

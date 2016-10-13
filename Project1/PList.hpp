@@ -78,7 +78,7 @@ public:
     
     //A function used to print the stats collected before
     //Note, this function truncates to two decimal places
-    void printInfo() const;
+    void printStats() const;
     
     
     //-------------------Priority Queue functions-------------------

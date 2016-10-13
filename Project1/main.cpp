@@ -7,11 +7,20 @@
 #include "FCFS.hpp"
 
 //System includes
+#include <map>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <functional>
+
+//Don't buffer if debugging
+#ifdef DEBUG_MODE
+#define NO_BUFF
+#endif
+
+//Helpful typedef
+typedef std::pair<uint, std::ostringstream*> pntType;
 
 //Global constants
 const uint m = 1;
@@ -103,7 +112,8 @@ void AddArrivals(PList* ToArrive, Algo& A) {
 }
 
 //This function simply processes each event
-void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse, Algo& A) {
+void ProcessEvent(Event* NextAction, PList* ToArrive,
+                  Process*& CPUInUse, Algo& A, pntType& toPrint) {
     
 #ifdef DEBUG_MODE
     //If debugging, print out important events
@@ -152,11 +162,14 @@ void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse, Algo& 
             Assert(!CPUInUse, "Another process is using the CPU");
             NextAction->p->BeginCPUBurst(); CPUInUse=NextAction->p;
             
-            //Print info
-            std::cout << "time " << (t.getTime()+t_cs/2) << "ms: Process "
+            //Record info to print
+            std::ostringstream *nextPnt = new std::ostringstream();
+            *nextPnt << "time " << (t.getTime()+t_cs/2) << "ms: Process "
             << NextAction->p->getProcID() << " started using the CPU ";
-            A.printQ();
             
+            //Record the info for later
+            toPrint.first = t.getTime()+t_cs/2;
+            toPrint.second = nextPnt;
     }
 }
 
@@ -206,9 +219,26 @@ void RunAlgo(PList* ToArrive, Algo& A) {
     //An int for storing when the next process switch ends
     uint InContextSwitchUntil = 0;
     
+    //An pntType to print in the future. This exists to
+    //ensure statements are printed in the correct order.
+    pntType toPrint(-1, NULL);
+    
     //Repeat while the alorithm is not done
     while (t.getTime() != -1) {
 
+        if (t.getTime() == 3270 ) {
+            int a = 0;
+        }
+
+        //Print everything that should print
+        if (toPrint.first <= t.getTime() && toPrint.second != NULL) {
+            std::cout << toPrint.second->str(); A.printQ();
+            
+            //Prevent memory leaks
+            delete toPrint.second;
+            toPrint.second = NULL;
+        }
+        
         //Add new processes
         AddArrivals(ToArrive, A);
         
@@ -219,7 +249,7 @@ void RunAlgo(PList* ToArrive, Algo& A) {
         if (NextAction) {
             
             //Process it
-            ProcessEvent(NextAction, ToArrive, CPUInUse, A);
+            ProcessEvent(NextAction, ToArrive, CPUInUse, A, toPrint);
             
             //Note that a context swtich is happening
             InContextSwitchUntil = t.getTime() + t_cs/2;
@@ -265,7 +295,7 @@ inline void Simulate(Algo *A, PList *p, const char* n) {
 //The main function
 int main(int argc, const char * argv[]) {
 
-#ifdef DEBUG_MODE
+#ifdef NO_BUFF
     //Disable stdout buffering
     setvbuf(stdout, NULL, _IONBF, 0);
 #endif
@@ -285,6 +315,9 @@ int main(int argc, const char * argv[]) {
     
     //Run the RR algorithm
     //Simulate(new RR, p, "RR");
+    
+    //Print the Algos' stats
+    p->printStats();
     
     //Success
     return EXIT_SUCCESS;
