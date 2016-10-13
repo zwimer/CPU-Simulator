@@ -37,6 +37,7 @@ public:
     //Note, the Algorithm sub-classes must be aware that the simulation
     //implements context switching! The algorithm must account for this!
     //Half of a context switch of of time t_cs/2 will occur after each event!
+    //Important. If a process preempts, this function MUST print the approriate output
     virtual int nextNotify() const = 0;
     
     //After this function is called, 

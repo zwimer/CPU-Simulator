@@ -81,9 +81,9 @@ public:
     bool getInIO() const;
     bool getDone() const;
     char getProcID() const;
-    uint getIOTIME() const;
     uint getNumBursts() const;
     uint getCPUBurstTime() const;
+    uint getIOFinishTime() const;
     uint getNumBurstsDone() const;
     
     //This function assume no preemption! It is the process' guess

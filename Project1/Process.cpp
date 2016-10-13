@@ -125,9 +125,9 @@ void Process::FinishCPUBurst() {
 bool Process::getInIO() const { return cState == BLOCKED; }
 bool Process::getDone() const { return cState == DONE; }
 char Process::getProcID() const { return ProcId; }
-uint Process::getIOTIME() const { return IOTime; }
 uint Process::getNumBursts() const { return numBursts; }
 uint Process::getCPUBurstTime() const { return CPUBurstTime; }
+uint Process::getIOFinishTime() const { return TimeofIOBurst+IOTime; }
 uint Process::getNumBurstsDone() const { return NumberCPUDone; }
 
 //This function assume no preemption! It is the process' guess

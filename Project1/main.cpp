@@ -125,7 +125,22 @@ void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse, Algo& 
             if (!NextAction->p->getDone()) {
                 NextAction->p->BeginIO();
                 ToArrive->push(NextAction->p);
-            } break;
+                
+                //Print burst finished info
+                std::cout << "time " << t.getTime() << "ms: Process "
+                << NextAction->p->getProcID() << " completed a CPU burst; "
+                << (NextAction->p->getNumBursts() - NextAction->p->getNumBurstsDone())
+                << " to go "; A.printQ();
+                
+                //Print process blocked info
+                std::cout << "time " << t.getTime() << "ms: Process " <<
+                NextAction->p->getProcID() << " blocked on I/O until time "
+                << NextAction->p->getIOFinishTime() << "ms "; A.printQ();
+            }
+            
+            //If the process terminated, print relevant info
+            else { std::cout << "time " << t.getTime() << "ms: Process " <<
+                NextAction->p->getProcID() << " terminated "; A.printQ();} break;
             
         //If we need to have a process begin context swith from the CPU, do so
         case PAUSE_BURST:
@@ -136,6 +151,11 @@ void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse, Algo& 
         case START_BURST:
             Assert(!CPUInUse, "Another process is using the CPU");
             NextAction->p->BeginCPUBurst(); CPUInUse=NextAction->p;
+            
+            //Print info
+            std::cout << "time " << (t.getTime()+t_cs/2) << "ms: Process "
+            << NextAction->p->getProcID() << " started using the CPU ";
+            A.printQ();
             
     }
 }
@@ -216,7 +236,7 @@ void RunAlgo(PList* ToArrive, Algo& A) {
 //A tiny function to run the full simulation
 inline void Simulate(Algo *A, PList *p, const char* n) {
     
-    //Print info
+    //Print starting info
     std::cout << "time 0ms: Simulator started for " << n << " [Q empty]\n";
     
     //The number of times
@@ -231,6 +251,10 @@ inline void Simulate(Algo *A, PList *p, const char* n) {
     
     //Print Stats
     p->recordStats(n);
+    
+    //Print finishing info
+    std::cout << "time " << (t.getLastTime()+t_cs/2)
+    << "ms: Simulator ended for FCFS\n\n";
     
     //Delete the algorithm
     delete A;

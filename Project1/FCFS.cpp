@@ -36,8 +36,9 @@ void FCFS::printQ() const {
                 std::cout << " " << (*i)->getProcID();
     }
 
-    //If there are no processes in the queue, say so
-    else std::cout << " empty";
+    //If there are no non-running processes in the queue, say so
+    if (!Queued.size() || (Queued.size() == 1 && ProcessRunning))
+        std::cout << " empty";
     
     //Finish printing
     std::cout << "]\n";
