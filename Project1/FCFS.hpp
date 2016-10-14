@@ -31,7 +31,7 @@ public:
     ~FCFS();
     
     //Get the current queue
-    void printQ() const;
+    const std::ostringstream* getQ() const;
     
     //Returns the amount of time until you want
     void addProcess(Process *p);

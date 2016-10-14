@@ -7,7 +7,7 @@
 #include "FCFS.hpp"
 
 //System includes
-#include <map>
+#include <list>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -19,15 +19,17 @@
 #define NO_BUFF
 #endif
 
-//Helpful typedef
-typedef std::pair<uint, std::ostringstream*> pntType;
-
 //Global constants
 const uint m = 1;
 const uint t_cs = 8;
 
 //Global time
 Time t;
+
+//Global vector of strings to be printed
+//This exists to allow all of the print
+//statements to be printed in the correct order
+std::vector<std::ostringstream*> toPrint;
 
 //------------------------Input Parsing------------------------
 
@@ -79,6 +81,7 @@ void readIn(const std::string& FileName, PList* p) {
 //--------------------Simulator helper functions--------------------
 
 
+//Inform the algorithm of new arrivals and process that just finished IO
 void AddArrivals(PList* ToArrive, Algo& A) {
     
     //A temporary boolean used to remember
@@ -98,9 +101,9 @@ void AddArrivals(PList* ToArrive, Algo& A) {
             //Tell the Algorithm
             A.addProcess(ToArrive->top());
             
-            //If the process has never arrived, print info
-            if (WasInIO) { std::cout << "time " << t.getTime() << "ms: Process "
-                <<ToArrive->top()->getProcID() << " completed I/O "; A.printQ(); }
+            //If the process just finished an IO burst, print info
+            if (WasInIO) { std::cout << "time " << t.getTime() << "ms: Process " <<
+                ToArrive->top()->getProcID() << " completed I/O "; A.printQ();}
 
             //If the process has never arrived, print info
             else { std::cout << "time " << t.getTime() << "ms: Process "
@@ -112,8 +115,8 @@ void AddArrivals(PList* ToArrive, Algo& A) {
 }
 
 //This function simply processes each event
-void ProcessEvent(Event* NextAction, PList* ToArrive,
-                  Process*& CPUInUse, Algo& A, pntType& toPrint) {
+void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse, Algo& A,
+                  std::pair<uint, std::ostringstream*>& toPrint,  const std::ostringstream* readyQueue) {
     
 #ifdef DEBUG_MODE
     //If debugging, print out important events
@@ -140,12 +143,12 @@ void ProcessEvent(Event* NextAction, PList* ToArrive,
                 std::cout << "time " << t.getTime() << "ms: Process "
                 << NextAction->p->getProcID() << " completed a CPU burst; "
                 << (NextAction->p->getNumBursts() - NextAction->p->getNumBurstsDone())
-                << " to go "; A.printQ();
+                << " to go " << readyQueue->str();
                 
                 //Print process blocked info
                 std::cout << "time " << t.getTime() << "ms: Process " <<
                 NextAction->p->getProcID() << " blocked on I/O until time "
-                << NextAction->p->getIOFinishTime() << "ms "; A.printQ();
+                << NextAction->p->getIOFinishTime() << "ms " << readyQueue->str();
             }
             
             //If the process terminated, print relevant info
@@ -171,6 +174,9 @@ void ProcessEvent(Event* NextAction, PList* ToArrive,
             toPrint.first = t.getTime()+t_cs/2;
             toPrint.second = nextPnt;
     }
+    
+    //Prevent memory leaks
+    delete readyQueue;
 }
 
 //This functions returns the next time something interesting should occur
@@ -219,25 +225,27 @@ void RunAlgo(PList* ToArrive, Algo& A) {
     //An int for storing when the next process switch ends
     uint InContextSwitchUntil = 0;
     
-    //An pntType to print in the future. This exists to
-    //ensure statements are printed in the correct order.
-    pntType toPrint(-1, NULL);
+    //Used to save the ready queue for later printing
+    const std::ostringstream* readyQueue;
+    
+    //Groups of strings to print in the future. These exists
+    //to ensure statements are printed in the correct order.
+    std::pair<uint,std::ostringstream*> toPrintStart(-1, NULL);
     
     //Repeat while the alorithm is not done
     while (t.getTime() != -1) {
 
-        if (t.getTime() == 3270 ) {
-            int a = 0;
-        }
-
-        //Print everything that should print
-        if (toPrint.first <= t.getTime() && toPrint.second != NULL) {
-            std::cout << toPrint.second->str(); A.printQ();
-            
+        //Print start process' info that should print if applicable
+        if (toPrintStart.first <= t.getTime() && toPrintStart.second != NULL) {
+                    std::cout << toPrintStart.second->str(); A.printQ();
+        
             //Prevent memory leaks
-            delete toPrint.second;
-            toPrint.second = NULL;
+            delete toPrintStart.second;
+            toPrintStart.second = NULL;
         }
+        
+        //Save the current ready queue
+        readyQueue =  A.getQ();
         
         //Add new processes
         AddArrivals(ToArrive, A);
@@ -249,7 +257,8 @@ void RunAlgo(PList* ToArrive, Algo& A) {
         if (NextAction) {
             
             //Process it
-            ProcessEvent(NextAction, ToArrive, CPUInUse, A, toPrint);
+            ProcessEvent(NextAction, ToArrive, CPUInUse,
+                         A, toPrintStart, readyQueue);
             
             //Note that a context swtich is happening
             InContextSwitchUntil = t.getTime() + t_cs/2;

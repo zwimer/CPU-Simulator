@@ -18,10 +18,13 @@ FCFS::FCFS() : Algo() {
 FCFS::~FCFS() {}
 
 //Returns a string representing the current ready queue
-void FCFS::printQ() const {
+const std::ostringstream* FCFS::getQ() const {
     
-    //Create the string to be returned
-    std::cout << "[Q";
+    //Create the ostringstream to be returned
+    std::ostringstream *ret = new std::ostringstream();
+    
+    //Start it
+    *ret << "[Q";
     
     //If there are processes in the queue
     if (Queued.size()) {
@@ -31,17 +34,18 @@ void FCFS::printQ() const {
             i = Queued.begin(); i != Queued.end(); i++)
             
             //If the first process in the queue is running, skip it
-            //Otherwise, print the process ID of the next ready process
+            //Otherwise, add the process ID of the next ready process
             if (!ProcessRunning || i != Queued.begin())
-                std::cout << " " << (*i)->getProcID();
+                *ret << " " << (*i)->getProcID();
     }
 
     //If there are no non-running processes in the queue, say so
     if (!Queued.size() || (Queued.size() == 1 && ProcessRunning))
-        std::cout << " empty";
+        *ret << " empty";
     
-    //Finish printing
-    std::cout << "]\n";
+    //Finish construction the stringstream
+    *ret << "]\n";
+    return ret;
 }
 
 //Notifies Algorithm of a new process

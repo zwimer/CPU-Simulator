@@ -6,6 +6,7 @@
 
 //System includes
 #include <vector>
+#include <sstream>
 
 //An abstract class to be extend by the actualy algorithms
 class Algo {
@@ -24,7 +25,11 @@ public:
     //a string meant for printing. Must return
     //a string in the form "[Q A B C]\n" where A, B, C
     //are the process IDs of the processes in the queue
-    virtual void printQ() const = 0;
+    virtual const std::ostringstream* getQ() const = 0;
+    
+    //A small function used to solely to
+    //print the queue obtained via getQ()
+    void printQ() const;
     
     //Notifies Algorithm of a new process
     //'New processes' include processes that
