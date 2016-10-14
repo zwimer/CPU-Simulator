@@ -137,7 +137,8 @@ bool Process::getWillBeDoneNext() const { return NumberCPUDone+1==numBursts; }
 //This function assume no preemption! It is the processes guess
 //This function implicitly accounts for context swtiching.
 uint Process::getFinishCPUTime() const {
-    Assert(cState==RUNNING, "Process is not in the CPU");
+    Assert(cState==RUNNING || CPUBurstTime+TimeofCPUBurst-Time_In_CPUBurst
+           == t.getTime(), "Process is not in the CPU");
     return CPUBurstTime+TimeofCPUBurst-Time_In_CPUBurst;
 }
 

@@ -23,7 +23,7 @@ const std::ostringstream* FCFS::getQ() const {
     //Create the ostringstream to be returned
     std::ostringstream *ret = new std::ostringstream();
     
-    //Start it
+    //Start construction
     *ret << "[Q";
     
     //If there are processes in the queue
@@ -43,7 +43,7 @@ const std::ostringstream* FCFS::getQ() const {
     if (!Queued.size() || (Queued.size() == 1 && ProcessRunning))
         *ret << " empty";
     
-    //Finish construction the stringstream
+    //Finish construction the ostringstream
     *ret << "]\n";
     return ret;
 }
@@ -94,11 +94,8 @@ Event* FCFS::getNextAction() {
         return new Event(START_BURST, Queued.front());
     }
     
-    //If there is a process running and it jsut finished
+    //If there is a process running and it just finished
     else if (ProcessRunning && t.getTime() == Queued.front()->getFinishCPUTime()) {
-        
-        //Record which process has ended
-        Process* tmp = Queued.front();
         
         //Note that the process has ended
         ProcessRunning = false; Queued.pop_front();
@@ -107,9 +104,9 @@ Event* FCFS::getNextAction() {
         FinishContextSwitch = t.getTime() + t_cs/2;
         
         //Finish the process
-        return new Event(FINISH_BURST, tmp);
+        return NULL;
     }
     
-    //Else, there is nothing to do
+    //There is nothing to do
     else return NULL;
 }

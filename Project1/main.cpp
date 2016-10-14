@@ -219,7 +219,10 @@ void RunAlgo(PList* ToArrive, Algo& A) {
     //The ProcID of the process using the CPU (0 if none)
     Process* CPUInUse = NULL;
     
-    //Create an Event*
+    //A bool used for error checking the algorithm
+    
+    
+    //Create an Event* here for efficiency
     Event* NextAction;
     
     //An int for storing when the next process switch ends
@@ -244,6 +247,11 @@ void RunAlgo(PList* ToArrive, Algo& A) {
             toPrintStart.second = NULL;
         }
         
+        //If the process in the CPU is done
+        if (CPUInUse) if (CPUInUse->getFinishCPUTime() == t.getTime())
+            ProcessEvent(new Event(FINISH_BURST, CPUInUse),
+                         ToArrive, CPUInUse, A, toPrintStart, A.getQ());
+        
         //Save the current ready queue
         readyQueue =  A.getQ();
         
@@ -255,6 +263,10 @@ void RunAlgo(PList* ToArrive, Algo& A) {
 
         //If there is an event
         if (NextAction) {
+            
+            //Error checking
+            Assert(NextAction->Type != FINISH_BURST,
+                   "The algorithm is not responsible for this");
             
             //Process it
             ProcessEvent(NextAction, ToArrive, CPUInUse,

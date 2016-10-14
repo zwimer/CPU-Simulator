@@ -49,6 +49,7 @@ public:
     //It is allowed to modify it's internal state if it wishes
     //Important: The algorithm can assume that any Event returned from is
     //started immediatly afterwards, thus can make the Event as completed
+    //This function should ONLY ever throw START_BURST and PAUSE_BURST events
     virtual Event* getNextAction() = 0;
 };
 
