@@ -219,9 +219,6 @@ void RunAlgo(PList* ToArrive, Algo& A) {
     //The ProcID of the process using the CPU (0 if none)
     Process* CPUInUse = NULL;
     
-    //A bool used for error checking the algorithm
-    
-    
     //Create an Event* here for efficiency
     Event* NextAction;
     
@@ -234,6 +231,9 @@ void RunAlgo(PList* ToArrive, Algo& A) {
     //Groups of strings to print in the future. These exists
     //to ensure statements are printed in the correct order.
     std::pair<uint,std::ostringstream*> toPrintStart(-1, NULL);
+    
+    //Time starts at 0
+    t.reset();
     
     //Repeat while the alorithm is not done
     while (t.getTime() != -1) {

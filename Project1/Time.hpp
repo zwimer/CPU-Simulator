@@ -15,7 +15,7 @@ public:
     //Constructor
     Time();
     
-    //Functions
+    //Getters
     const int getTime() const;
     const int getLastTime() const;
     
@@ -23,6 +23,9 @@ private:
     
     //Allow time to be changed by RunAlgo
     friend void RunAlgo(PList*, Algo&);
+    
+    //Reset time
+    void reset();
     
     //Set the time
     void setTime(int a);

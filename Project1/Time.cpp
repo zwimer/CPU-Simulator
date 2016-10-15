@@ -10,6 +10,9 @@ int Time::numTime= 0;
 //Constructor, makes sure that only one Time exists
 Time::Time() : t(0) { Assert(!numTime++, "2 time classes should never exist!"); }
 
+//Reset time to 0
+void Time::reset() { t = 0; }
+
 //Set time if the time increases
 //If a is -1, increase only t
 void Time::setTime(int a) {
