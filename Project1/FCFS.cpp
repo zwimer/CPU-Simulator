@@ -9,9 +9,6 @@ FCFS::FCFS() : Algo() {
     
     //No context switches have occured
     FinishContextSwitch = 0;
-    
-    //Initalize stats
-    NumContextSwitches = 0;
 }
 
 //Destructor
@@ -49,15 +46,7 @@ const std::ostringstream* FCFS::getQ() const {
 }
 
 //Notifies Algorithm of a new process
-void FCFS::addProcess(Process *p) {
-    
-    //Add the new process to the queue
-    Queued.push_back(p);
-    
-    //Record info for stats
-    NumContextSwitches++;
-    AllProcesses.insert(p);
-}
+void FCFS::addProcess(Process *p) { Queued.push_back(p); }
 
 //The algorithm will return a uint specifying
 //the next time it wants to be notified of the time

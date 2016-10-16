@@ -18,10 +18,6 @@ private:
     uint FinishContextSwitch;
     std::list<Process*> Queued;
     
-    //Used solely for stats
-    uint NumContextSwitches;
-    std::set<Process*> AllProcesses;
-    
 public:
     
     //Constructor
