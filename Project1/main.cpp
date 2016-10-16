@@ -26,10 +26,6 @@ const uint t_cs = 8;
 //Global time
 Time t;
 
-//Global vector of strings to be printed
-//This exists to allow all of the print
-//statements to be printed in the correct order
-std::vector<std::ostringstream*> toPrint;
 
 //------------------------Input Parsing------------------------
 
@@ -311,7 +307,9 @@ inline void Simulate(Algo *A, PList *p, const char* n) {
     delete A;
 }
 
+
 //--------------------------Main--------------------------
+
 
 //The main function
 int main(int argc, const char * argv[]) {
@@ -327,7 +325,7 @@ int main(int argc, const char * argv[]) {
     
     //Read in the file
     readIn(argv[1],p);
-    
+
     //Run the FCFS algorithm
     Simulate(new FCFS, p, "FCFS");
     

@@ -201,5 +201,14 @@ uint Process::getWaitTime() const {
 
 //Returns true if a > b
 //Sorts by time arrived
-bool ProcessCompare::operator() (const Process* a, const Process* b)
-{ return a->getTimeArrived() > b->getTimeArrived(); }
+//If they are the same, sorts by process ID
+bool ProcessCompare::operator() (const Process* a, const Process* b) {
+    
+    //Temporary variables used for efficency
+    int p1 = a->getTimeArrived();
+    int p2 = b->getTimeArrived();
+    
+    //Return the answer
+    if ( p1 != p2 ) return p1 > p2;
+    else return a->getProcID() > b->getProcID();
+}
