@@ -48,7 +48,8 @@ private:
     int numPreemptions;
     int numContextSwitches;
     std::vector<int> WaitTimes;
-    std::map<Process*, int> TurnAroundTimes;
+    std::vector<int> TurnAroundTimes;
+    std::map<Process*, int> StartTimes;
     
     //A private helper function
     void constructorHelper();

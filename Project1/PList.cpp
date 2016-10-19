@@ -35,9 +35,6 @@ void PList::add(Process* p, bool runBefore) {
     //If the process has never arrived yet
     if (!p->getNumBurstsDone()) {
         
-        //Record the time it first arrives
-        TurnAroundTimes[p]=p->getTimeArrived()-t_cs/2;
-        
         //If the process has never run before
         if (!runBefore) P.push_back(p);
     }
@@ -75,45 +72,55 @@ void PList::inform(Event *e) {
         //Increment the number of context switches
         numContextSwitches++;
         
+        //Record when the process began
+        //But only if it isn't resuming from a preemption
+        if (StartTimes.find(e->p) == StartTimes.end())
+            StartTimes[e->p] = e->p->getTimeArrived();
+        
         //Record how much time the process was waiting
         WaitTimes.push_back(t.getTime() - e->p->getTimeArrived());
     }
     
     //If a preemption was requested, record it
-    else if (e->Type == PAUSE_BURST) numPreemptions++;
+    else if (e->Type == PAUSE_BURST)
+        numPreemptions++;
     
-    //If a process is finishing it's last CPU burst, subtract the current
-    //time from the time it initially arrived to determine it's turn around time
-    else if (e->Type == FINISH_BURST && e->p->getNumBursts() == 1+e->p->getNumBurstsDone())
-        TurnAroundTimes[e->p] = t.getTime() - TurnAroundTimes[e->p];
+    //If a process is finishing a CPU burst
+    else if (e->Type == FINISH_BURST) {
+     
+        //Calculate the turn around time
+        TurnAroundTimes.push_back(t.getTime() - StartTimes[e->p]);
+        printf("t = %d\n", t.getTime());
+
+        //Since the process is done, remove it
+        StartTimes.erase(e->p);
+    }
+    
+    //In case something went wrong
+    else Err("Illegal event thrown");
 }
 
 
 //Print info
 void PList::recordStats(const char* n) {
     
-    //Iterators
-    uint i,j; std::map<Process*, int>::const_iterator k;
-    
     //Create temporary variables to hold averages
     double avgCPUTime=0, avgWaitTime=0, avgTurnAroundTime=0;
     
     //Calculate the average CPU time
-    for(i = 0, j = 0; i < P.size(); i++) {
-        j += P[i]->getNumBursts();
+    for(uint i = 0; i < P.size(); i++)
         avgCPUTime += P[i]->getNumBursts()*P[i]->getCPUBurstTime();
-    }
-    avgCPUTime/=j;
+    avgCPUTime /= WaitTimes.size();
     
     //Calculate the average wait time
-    for(i = 0; i < WaitTimes.size(); i++)
+    for(uint i = 0; i < WaitTimes.size(); i++)
         avgWaitTime += WaitTimes[i];
-    avgWaitTime/=i;
+    avgWaitTime /= WaitTimes.size();
     
     //Calculate the average turn around time
-    for(k = TurnAroundTimes.begin(); k != TurnAroundTimes.end(); k++)
-        avgTurnAroundTime += k->second;
-    avgTurnAroundTime/=TurnAroundTimes.size();
+    for(uint i = 0; i < TurnAroundTimes.size(); i++)
+        avgTurnAroundTime += TurnAroundTimes[i];
+    avgTurnAroundTime /= WaitTimes.size();
     
     //Print the information in the format requested
     GatheredStats << "Algorithm " << n;

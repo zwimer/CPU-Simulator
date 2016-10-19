@@ -14,6 +14,7 @@
 #include <iostream>
 #include <functional>
 
+#define NO_BUFF
 //Don't buffer if debugging
 #ifdef DEBUG_MODE
 #define NO_BUFF
