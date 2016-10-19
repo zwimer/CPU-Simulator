@@ -109,17 +109,17 @@ void PList::recordStats(const char* n) {
     //Calculate the average CPU time
     for(uint i = 0; i < P.size(); i++)
         avgCPUTime += P[i]->getNumBursts()*P[i]->getCPUBurstTime();
-    avgCPUTime /= WaitTimes.size();
+    avgCPUTime /= TurnAroundTimes.size();
     
     //Calculate the average wait time
     for(uint i = 0; i < WaitTimes.size(); i++)
         avgWaitTime += WaitTimes[i];
-    avgWaitTime /= WaitTimes.size();
+    avgWaitTime /= TurnAroundTimes.size();
     
     //Calculate the average turn around time
     for(uint i = 0; i < TurnAroundTimes.size(); i++)
         avgTurnAroundTime += TurnAroundTimes[i];
-    avgTurnAroundTime /= WaitTimes.size();
+    avgTurnAroundTime /= TurnAroundTimes.size();
     
     //Print the information in the format requested
     GatheredStats << "Algorithm " << n;
