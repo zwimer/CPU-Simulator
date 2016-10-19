@@ -90,7 +90,6 @@ void PList::inform(Event *e) {
      
         //Calculate the turn around time
         TurnAroundTimes.push_back(t.getTime() - StartTimes[e->p]);
-        printf("t = %d\n", t.getTime());
 
         //Since the process is done, remove it
         StartTimes.erase(e->p);
