@@ -93,15 +93,17 @@ void PList::inform(Event *e) {
 void PList::recordStats(const char* n) {
     
     //Iterators
-    uint i; std::map<Process*, int>::const_iterator k;
+    uint i,j; std::map<Process*, int>::const_iterator k;
     
     //Create temporary variables to hold averages
     double avgCPUTime=0, avgWaitTime=0, avgTurnAroundTime=0;
     
     //Calculate the average CPU time
-    for(i = 0; i < P.size(); i++)
+    for(i = 0, j = 0; i < P.size(); i++) {
+        j += P[i]->getNumBursts();
         avgCPUTime += P[i]->getNumBursts()*P[i]->getCPUBurstTime();
-    avgCPUTime/=i;
+    }
+    avgCPUTime/=j;
     
     //Calculate the average wait time
     for(i = 0; i < WaitTimes.size(); i++)
