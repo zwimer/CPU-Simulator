@@ -17,7 +17,7 @@ void Time::reset() { t = 0; }
 //If a is -1, increase only t
 void Time::setTime(int a) {
     Assert(a>t||a==-1, "Time did not increase!");
-        t2 = t; t = a;
+    t2 = t; t = a;
 }
 
 //Get time

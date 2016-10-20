@@ -243,6 +243,13 @@ void RunAlgo(PList* ToArrive, Algo& A) {
     //Repeat while the alorithm is not done
     while (t.getTime() != -1) {
 
+        if (t.getTime() == 2624
+            ) {
+            
+            int a2ert = 0;
+        }
+
+        
         //Print start process' info that should print if applicable
         if (toPrintStart.first <= t.getTime() && toPrintStart.second != NULL) {
                     std::cout << toPrintStart.second->str(); A.printQ();
@@ -336,13 +343,13 @@ int main(int argc, const char * argv[]) {
     readIn(argv[1],p);
 
     //Run the FCFS algorithm
-    Simulate(new FCFS, p, "FCFS");
+//    Simulate(new FCFS, p, "FCFS");
     
     //Run the SJF algorithm
-    //Simulate(new SJF, p, "SJF");
+    Simulate(new SJF, p, "SJF");
     
     //Run the RR algorithm
-    Simulate(new RR, p, "RR");
+    //Simulate(new RR, p, "RR");
     
     //Print the Algos' stats
     p->printStats();

@@ -13,7 +13,7 @@
 
 //A function used if an assert fails
 void Err(const char *s) {
-    std::cout << "Error: " << s << std::endl;
+    std::cout << "Error at t = " << t.getTime() << ": " << s << std::endl;
     perror("Perror");
     exit(EXIT_FAILURE);
 }

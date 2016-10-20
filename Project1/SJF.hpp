@@ -4,30 +4,46 @@
 //My includes
 #include "Algo.hpp"
 
+//System includes
+#include <set>
+#include <list>
 
 //SJF algorithm class
 class SJF : public Algo {
     
+private:
+    
+    //Representation
+    Process *running;
+    bool ProcessRunning;
+    uint FinishContextSwitch;
+    std::list<Process*> Queued;
+    
 public:
     
-    //Notifies Algorithm of a new process
-    //'New processes' include processes that
-    //just finished IO and need another CPU burst
+    //Constructor
+    SJF();
+    
+    //Destructor
+    ~SJF();
+    
+    //Get the current queue
+    const std::ostringstream* getQ() const;
+    
+    //Returns the amount of time until you want
     void addProcess(Process *p);
     
-    //The algorithm will return a uint specifying
+    //The algorithm will return an int specifying
     //the next time it wants to be notified of the time
     //Return's -1 is done, otherwise returns a positive number
-    //Note, the Algorithm sub-classes must be aware that the simulation
-    //implements context switching! The algorithm must account for this!
-    //Half of a context switch of of time t_cs/2 will occur after each event!
     int nextNotify() const;
     
-    //This function will ONLY be called once per any t
-    //It is allowed to modify it's internal state if it wishes
-    //Returns a list of events the computer must do by putting it in V
+    //Returns an event to do at time t
+    //This will only be called at time t!
+    //Returns NULL if there is no new event
+    //If this returns an event, a context swtich will start
     Event* getNextAction();
-    
 };
+
 
 #endif /* SJF_hpp */
