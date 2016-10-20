@@ -1,3 +1,7 @@
+/* Operating Systems Project 1
+ * Alex Slanski, Owen Stenson, Zac Wimer
+ */
+
 #ifndef Event_hpp
 #define Event_hpp
 

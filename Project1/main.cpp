@@ -1,3 +1,7 @@
+/* Operating Systems Project 1
+ * Alex Slanski, Owen Stenson, Zac Wimer
+ */
+
 //My includes
 #include "PList.hpp"
 
@@ -67,7 +71,11 @@ void readIn(const std::string& FileName, PList* p) {
         std::istringstream nextLine(line);
   
         //Read in the variables
-        nextLine >> a >> b >> c >> d >> e;
+        if(!(nextLine >> a >> b >> c >> d >> e)) {
+            //error
+            fprintf(stderr, "ERROR: Invalid input file format\n");
+            exit(EXIT_FAILURE);
+        }
         
         //Add a new process
         p->add(new Process(a,b,c,d,e));
@@ -325,7 +333,7 @@ int main(int argc, const char * argv[]) {
     if(argc != 3) {
         fprintf(stderr, "ERROR: Invalid arguments\n\
 USAGE: ./a.out <input-file> <stats-output-file>\n");
-        return EXIT_FAILURE;
+        exit(EXIT_FAILURE);
     }
 
 #ifdef NO_BUFF
