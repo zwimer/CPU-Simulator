@@ -68,7 +68,7 @@ Event* FCFS::getNextAction() {
     if (!Queued.size()) return NULL;
 
     //If no process is running, and no context swtich is happening
-    else if (!ProcessRunning && t.getTime() >= FinishContextSwitch) {
+    else if (!ProcessRunning && t.getTime() >= (int)FinishContextSwitch) {
         
         //Note that the process has started
         ProcessRunning = true;
@@ -81,7 +81,7 @@ Event* FCFS::getNextAction() {
     }
     
     //If there is a process running and it just finished
-    else if (ProcessRunning && t.getTime() == Queued.front()->getFinishCPUTime()) {
+    else if (ProcessRunning && t.getTime() == (int)Queued.front()->getFinishCPUTime()) {
         
         //Note that the process has ended
         ProcessRunning = false; Queued.pop_front();

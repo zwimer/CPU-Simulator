@@ -72,7 +72,7 @@ void Process::FinishIO() {
     
     //Error checking
     Assert(cState==BLOCKED, "Process not blocked");
-    Assert(t.getTime()==TimeofIOBurst+IOTime, "IO finished at the wrong time");
+    Assert(t.getTime()==(int)(TimeofIOBurst+IOTime), "IO finished at the wrong time");
     
     //FinishIO
     cState=READY;
@@ -95,8 +95,8 @@ void Process::PauseCPUBurst() {
     
     //Error checking
     Assert(cState == RUNNING, "Process never ran!");
-    Assert(t.getTime()<TimeofCPUBurst+CPUBurstTime, "CPU paused when it should have ended");
-    Assert(t.getTime()>=TimeofCPUBurst, "Error, t < Time of this CPU burst");
+    Assert(t.getTime()<(int)(TimeofCPUBurst+CPUBurstTime), "CPU paused when it should have ended");
+    Assert(t.getTime()>=(int)TimeofCPUBurst, "Error, t < Time of this CPU burst");
     
     //Record current CPU time and set state to ready
     Time_In_CPUBurst+=t.getTime()-TimeofCPUBurst; cState=READY;
@@ -137,7 +137,7 @@ bool Process::getWillBeDoneNext() const { return NumberCPUDone+1==numBursts; }
 //This function assume no preemption! It is the processes guess
 //This function implicitly accounts for context swtiching.
 uint Process::getFinishCPUTime() const {
-    Assert(cState==RUNNING || CPUBurstTime+TimeofCPUBurst-Time_In_CPUBurst
+    Assert(cState==RUNNING || (int)(CPUBurstTime+TimeofCPUBurst-Time_In_CPUBurst)
            == t.getTime(), "Process is not in the CPU");
     return CPUBurstTime+TimeofCPUBurst-Time_In_CPUBurst;
 }
@@ -172,7 +172,7 @@ uint Process::getTurnAroundTime() const {
            "Error, can't get wait time from living process");
     
     //Assert this wasn't used in error.
-    Assert(t.getTime() >= TimeArrived,
+    Assert(t.getTime() >= (int)TimeArrived,
            "Error, process finished before it arrived");
     
     //Return the answer

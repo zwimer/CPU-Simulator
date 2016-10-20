@@ -47,7 +47,7 @@ Event* RR::getNextAction()
 	}
 	//pause burst
 	Process* tmp = current;
-	if (t.getTime() >= endts)
+	if (t.getTime() >= (int)endts)
 	{
 		queue.push_back(current);
 		std::cout << "time " << t.getTime() << "ms: Time slice expired; process " << tmp->getProcID() << " preempted with " << (tmp->getFinishCPUTime() -  t.getTime()) << "ms to go " << getQ()->str();

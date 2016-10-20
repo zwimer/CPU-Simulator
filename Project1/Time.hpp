@@ -20,6 +20,8 @@ public:
     const int getLastTime() const;
     
 private:
+    //Note: time sometimes has to be -1, so it must be stored in a signed int
+    //Hence all the comparisons with casting
     
     //Allow time to be changed by RunAlgo
     friend void RunAlgo(PList*, Algo&);

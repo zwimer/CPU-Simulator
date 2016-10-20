@@ -85,7 +85,7 @@ Event* SJF::getNextAction() {
     if (!Queued.size() && !runningProc) return NULL;
     
     //If no process is running, and no context swtich is happening
-    else if (!ProcessRunning && t.getTime() >= FinishContextSwitch) {
+    else if (!ProcessRunning && t.getTime() >= (int)FinishContextSwitch) {
         
         //Note that the process has started
         ProcessRunning = true;
@@ -103,7 +103,7 @@ Event* SJF::getNextAction() {
     }
     
     //If there is a process running and it just finished
-    else if (ProcessRunning && t.getTime() == runningProc->getFinishCPUTime()) {
+    else if (ProcessRunning && t.getTime() == (int)runningProc->getFinishCPUTime()) {
         
         //Note that the process has ended
         ProcessRunning = false; 

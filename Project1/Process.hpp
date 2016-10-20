@@ -29,10 +29,10 @@ private:
     
     //Constants
     const char ProcId;
-    const uint IOTime;
-    const uint numBursts;
     const uint TimeArrived;
     const uint CPUBurstTime;
+    const uint numBursts;
+    const uint IOTime;
     
     //The number of CPU bursts done
     uint NumberCPUDone;

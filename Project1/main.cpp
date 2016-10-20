@@ -196,7 +196,7 @@ int getNextImportantTime(PList* ToArrive, Algo& A, uint InContextSwitchUntil, Pr
     int nextTime = A.nextNotify();
     
     //Ignore the alogirthm until the context switch is done
-    if (t.getTime() < InContextSwitchUntil && nextTime != -1)
+    if (t.getTime() < (int)InContextSwitchUntil && nextTime != -1)
         nextTime = nextTime>(int)(t.getTime()+t_cs)/2?nextTime:(int)(t.getTime()+t_cs/2);
     
     //If a process is going to finish before this, note so
@@ -243,15 +243,8 @@ void RunAlgo(PList* ToArrive, Algo& A) {
     //Repeat while the alorithm is not done
     while (t.getTime() != -1) {
 
-        if (t.getTime() == 2624
-            ) {
-            
-            int a2ert = 0;
-        }
-
-        
         //Print start process' info that should print if applicable
-        if (toPrintStart.first <= t.getTime() && toPrintStart.second != NULL) {
+        if ((int)toPrintStart.first <= t.getTime() && toPrintStart.second != NULL) {
                     std::cout << toPrintStart.second->str(); A.printQ();
         
             //Prevent memory leaks
@@ -260,7 +253,7 @@ void RunAlgo(PList* ToArrive, Algo& A) {
         }
         
         //If the process in the CPU is done
-        if (CPUInUse) if (CPUInUse->getFinishCPUTime() == t.getTime())
+        if (CPUInUse) if ((int)CPUInUse->getFinishCPUTime() == t.getTime())
             ProcessEvent(new Event(FINISH_BURST, CPUInUse),
                          ToArrive, CPUInUse, A, toPrintStart, A.getQ());
         
@@ -343,13 +336,13 @@ int main(int argc, const char * argv[]) {
     readIn(argv[1],p);
 
     //Run the FCFS algorithm
-//    Simulate(new FCFS, p, "FCFS");
+    Simulate(new FCFS, p, "FCFS");
     
     //Run the SJF algorithm
     Simulate(new SJF, p, "SJF");
     
     //Run the RR algorithm
-    //Simulate(new RR, p, "RR");
+    Simulate(new RR, p, "RR");
     
     //Print the Algos' stats
     p->printStats();
