@@ -16,15 +16,27 @@ void RR::addProcess(Process* p)
 
 int RR::nextNotify() const
 {
-	if (queue.size() == 0) return -1;
+	if (queue.size() == 0 && current == NULL) return -1;
 	return endts;
 }
 
 Event* RR::getNextAction()
 {
-	//End of CPU burst
-	if (current != NULL) if (current->getDone() || current->getInIO())	current = NULL;
-	//start new burst
+//End of CPU burst
+	if (current != NULL) if (current->getDone() || current->getInIO())
+	{
+		current = NULL;
+		endts = t.getTime() + t_cs/2;
+		return NULL;
+	}
+//time slice expired w/ empty queue
+	if (queue.size() == 0 && current != NULL)
+	{
+		std::cout <<"time " << t.getTime()
+			<<"ms: Time slice expired; no preemption because ready queue is empty [Q empty]" << std::endl;
+		endts = t.getTime() + t_slice;
+	}
+//start new burst
 	if (current == NULL)
 	{
 		if (queue.size() == 0)	return NULL;
@@ -38,11 +50,11 @@ Event* RR::getNextAction()
 	if (t.getTime() >= endts)
 	{
 		queue.push_back(current);
+		std::cout << "time " << t.getTime() << "ms: Time slice expired; process " << tmp->getProcID() << " preempted with " << (tmp->getFinishCPUTime() -  t.getTime()) << "ms to go " << getQ()->str();
 		current = NULL;
-		endts = endts + t_cs/2;
+		endts = t.getTime() + t_cs/2;
 		return new Event(PAUSE_BURST, tmp);
 	}
-	//std::cerr << "BAD JUJU\n";
 	return NULL;
 }
 
