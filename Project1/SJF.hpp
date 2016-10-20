@@ -14,7 +14,7 @@ class SJF : public Algo {
 private:
     
     //Representation
-    Process *running;
+    Process *runningProc;
     bool ProcessRunning;
     uint FinishContextSwitch;
     std::list<Process*> Queued;

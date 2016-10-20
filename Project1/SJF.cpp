@@ -45,6 +45,9 @@ const std::ostringstream* SJF::getQ() const {
 
 
 bool srt(const Process* a, const Process* b) {
+    //used to sort processes in place within the `Queued` linked list
+    //sort first by Burst time (because this is SJF)
+    //  and secondarily by process ID to break ties
     int p1 = a->getCPUBurstTime();
     int p2 = b->getCPUBurstTime();
     
@@ -54,7 +57,10 @@ bool srt(const Process* a, const Process* b) {
 
 
 //Notifies Algorithm of a new process
-void SJF::addProcess(Process *p) { Queued.push_back(p);
+void SJF::addProcess(Process *p) { 
+    //add process to the queue
+    Queued.push_back(p);
+    //make sure the queue is always sorted
     Queued.sort(srt);
 }
 
@@ -75,7 +81,8 @@ int SJF::nextNotify() const {
 Event* SJF::getNextAction() {
     
     //If there is nothing to do, do nothing
-    if (!Queued.size() && !running) return NULL;
+    //all the processes that are tracked are not in `Queued`; one might be running
+    if (!Queued.size() && !runningProc) return NULL;
     
     //If no process is running, and no context swtich is happening
     else if (!ProcessRunning && t.getTime() >= FinishContextSwitch) {
@@ -86,18 +93,21 @@ Event* SJF::getNextAction() {
         //Start a half context switch
         FinishContextSwitch = t.getTime() + t_cs/2;
         
-        running = Queued.front();
+        //start the process at the top of the queue
+        runningProc = Queued.front();
+        //the  queue only stores processes that aren't running
         Queued.pop_front();
         
         //Start the new process
-        return new Event(START_BURST, running);
+        return new Event(START_BURST, runningProc);
     }
     
     //If there is a process running and it just finished
-    else if (ProcessRunning && t.getTime() == running->getFinishCPUTime()) {
+    else if (ProcessRunning && t.getTime() == runningProc->getFinishCPUTime()) {
         
         //Note that the process has ended
-        ProcessRunning = false; running = NULL;
+        ProcessRunning = false; 
+        runningProc = NULL;
         
         //Start a half context switch
         FinishContextSwitch = t.getTime() + t_cs/2;
