@@ -49,7 +49,7 @@ void PList::add(Process* p, bool runBefore) {
 void PList::reset() {
     
     //Clear unneeded values
-    WaitTimes.clear();
+    WaitTimeInfo.clear();
     TurnAroundTimes.clear();
     
     //Reset defaults
@@ -82,13 +82,20 @@ void PList::inform(Event *e) {
         if (StartTimes.find(e->p) == StartTimes.end())
             StartTimes[e->p] = e->p->getTimeArrived();
         
-        //Record how much time the process was waiting
-        WaitTimes.push_back(t.getTime() - e->p->getTimeArrived());
+        //If there is an even number of items then we do not
+        //need to account for preemptions, thus record time arrived
+        if (!(WaitTimeInfo[e->p].size()%2))
+            WaitTimeInfo[e->p].push_back(e->p->getTimeArrived());
+        
+        //Record the time arrived
+        WaitTimeInfo[e->p].push_back(t.getTime());
     }
     
-    //If a preemption was requested, record it
-    else if (e->Type == PAUSE_BURST)
+    //If a preemption was requested, record it, and the current time
+    else if (e->Type == PAUSE_BURST) {
+        WaitTimeInfo[e->p].push_back(t.getTime());
         numPreemptions++;
+    }
     
     //If a process is finishing a CPU burst
     else if (e->Type == FINISH_BURST) {
@@ -108,6 +115,9 @@ void PList::inform(Event *e) {
 //Print info
 void PList::recordStats(const char* n) {
     
+    //Error checking
+    Assert(WaitTimeInfo.size()%2==0, "This should be even!");
+    
     //Create temporary variables to hold averages
     double avgCPUTime=0, avgWaitTime=0, avgTurnAroundTime=0;
     
@@ -117,8 +127,10 @@ void PList::recordStats(const char* n) {
     avgCPUTime /= TurnAroundTimes.size();
     
     //Calculate the average wait time
-    for(uint i = 0; i < WaitTimes.size(); i++)
-        avgWaitTime += WaitTimes[i];
+    for(std::map<Process*, std::vector<int> >::const_iterator
+        k = WaitTimeInfo.begin(); k != WaitTimeInfo.end(); k++)
+        for(uint i = 0; i < k->second.size(); i+=2)
+            avgWaitTime += (k->second[i+1] - k->second[i]);
     avgWaitTime /= TurnAroundTimes.size();
     
     //Calculate the average turn around time
@@ -140,6 +152,7 @@ void PList::printStats() const { std::cout << GatheredStats.str(); }
 
 
 //-------------------Priority Queue functions-------------------
+
 
 //Adds p to the priority queue
 void PList::push(Process* p) { Q->push(p); }

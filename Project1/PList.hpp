@@ -51,9 +51,9 @@ private:
     //Record stats
     int numPreemptions;
     int numContextSwitches;
-    std::vector<int> WaitTimes;
     std::vector<int> TurnAroundTimes;
     std::map<Process*, int> StartTimes;
+    std::map<Process*, std::vector<int> > WaitTimeInfo;
     
     //A private helper function
     void constructorHelper();
