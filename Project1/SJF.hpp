@@ -34,6 +34,9 @@ public:
     //Get the current queue
     const std::ostringstream* getQ() const;
     
+    //Returns true if the ready queue is empty
+    bool queueEmpty() const;
+    
     //Returns the amount of time until you want
     void addProcess(Process *p);
     

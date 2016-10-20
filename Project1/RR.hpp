@@ -19,7 +19,11 @@ private:
 	  static const int t_slice = 84;	
 public:
    
-	  RR() ; 
+    RR() ;
+    
+    //Returns true if the ready queue is empty
+    bool queueEmpty() const;
+    
     //Notifies Algorithm of a new process
     //'New processes' include processes that
     //just finished IO and need another CPU burst

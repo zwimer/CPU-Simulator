@@ -35,6 +35,10 @@ public:
     //print the queue obtained via getQ()
     void printQ() const;
     
+    //Returns true if hte ready queue is empty
+    //Otherwise returns false. This is used for stats
+    virtual bool queueEmpty() const = 0;
+    
     //Notifies Algorithm of a new process
     //'New processes' include processes that
     //just finished IO and need another CPU burst

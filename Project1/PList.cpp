@@ -27,7 +27,9 @@ void PList::constructorHelper() {
     delete Q; Q = new PQueue;
     
     //Reset Stats
-    numPreemptions = 0; numContextSwitches = 0;
+    numPreemptions = 0;
+    numNonIgnoredCS = 0;
+    numContextSwitches = 0;
     
 }
 
@@ -111,12 +113,12 @@ void PList::inform(Event *e) {
     else Err("Illegal event thrown");
 }
 
+void PList::specialContextSwitch() {
+    numNonIgnoredCS++;
+}
 
 //Print info
 void PList::recordStats(const char* n) {
-    
-    //Error checking
-    Assert(WaitTimeInfo.size()%2==0, "This should be even!");
     
     //Create temporary variables to hold averages
     double avgCPUTime=0, avgWaitTime=0, avgTurnAroundTime=0;
@@ -126,17 +128,20 @@ void PList::recordStats(const char* n) {
         avgCPUTime += P[i]->getNumBursts()*P[i]->getCPUBurstTime();
     avgCPUTime /= TurnAroundTimes.size();
     
-    //Calculate the average wait time
-    for(std::map<Process*, std::vector<int> >::const_iterator
-        k = WaitTimeInfo.begin(); k != WaitTimeInfo.end(); k++)
-        for(uint i = 0; i < k->second.size(); i+=2)
-            avgWaitTime += (k->second[i+1] - k->second[i]);
-    avgWaitTime /= TurnAroundTimes.size();
-    
     //Calculate the average turn around time
     for(uint i = 0; i < TurnAroundTimes.size(); i++)
         avgTurnAroundTime += TurnAroundTimes[i];
     avgTurnAroundTime /= TurnAroundTimes.size();
+
+    //Calculate the average wait time
+    //For how he wanted wait times calculated,
+    //he ignored certain context switches and not others.
+    //In order to avoid implmenting this, we derived an equation. Thus:
+    avgWaitTime = avgTurnAroundTime - avgCPUTime;
+    
+    //Adjusting for context switches
+    avgWaitTime +=  (t_cs / (double)TurnAroundTimes.size()) *
+                    ((double)numNonIgnoredCS/2 - numContextSwitches);
     
     //Print the information in the format requested
     GatheredStats << "Algorithm " << n;

@@ -12,9 +12,13 @@ RR::RR() : Algo()
 	endts = 0;
 }
 
+//Returns true if the ready queue is empty
+bool RR::queueEmpty() const {
+    return !queue.size();
+}
 
-void RR::addProcess(Process* p)
-{
+//Return true if the queue was empty
+void RR::addProcess(Process* p) {
 	queue.push_back(p);
 }
 

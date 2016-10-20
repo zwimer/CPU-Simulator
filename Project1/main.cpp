@@ -31,7 +31,6 @@ const uint t_cs = 8;
 //Global time
 Time t;
 
-
 //------------------------Input Parsing------------------------
 
 
@@ -268,7 +267,14 @@ void RunAlgo(PList* ToArrive, Algo& A) {
         //Save the current ready queue
         readyQueue =  A.getQ();
         
-        //Add new processes
+        //If a processes is going to arrive at an
+        //empty ready queue and the CPU is not in use
+        //Record this for future stat calculations
+        if (A.queueEmpty() && !CPUInUse && ToArrive->size())
+            if ( ToArrive->top()->getTimeArrived() == (uint)t.getTime() )
+                ToArrive->specialContextSwitch();
+        
+        //Add new processes.
         AddArrivals(ToArrive, A);
         
         //Get the list of events to do now

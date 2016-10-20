@@ -4,6 +4,9 @@
 
 #include "FCFS.hpp"
 
+//Note that this algorithm keeps the currently
+//running process in the variable Queued and does
+//not treat that first element as part of the ready queue
 
 //Constructor
 FCFS::FCFS() : Algo() {
@@ -17,6 +20,11 @@ FCFS::FCFS() : Algo() {
 
 //Destructor
 FCFS::~FCFS() {}
+
+//Returns true if the ready queue is empty
+bool FCFS::queueEmpty() const {
+    return !(ProcessRunning?Queued.size()<=1:Queued.size());
+}
 
 //Returns a string representing the current ready queue
 const std::ostringstream* FCFS::getQ() const {

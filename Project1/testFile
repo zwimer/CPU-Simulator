@@ -1,7 +1,6 @@
-# p1-test-input01.txt
+# p1-test-input05.txt
 #
 # <proc-id>|<initial-arrival-time>|<cpu-burst-time>|<num-bursts>|<io-time>
-A|0|168|5|287
-B|0|385|1|0
-C|250|1770|2|822
-D|190|97|5|2499
+X|0|840|5|20
+Y|190|940|5|30
+Z|20|340|5|40

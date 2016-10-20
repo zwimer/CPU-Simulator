@@ -17,6 +17,11 @@ SJF::SJF() : Algo() {
 //Destructor
 SJF::~SJF() {}
 
+//Returns true if the ready queue is empty
+bool SJF::queueEmpty() const {
+    return !Queued.size();
+}
+
 //Returns a string representing the current ready queue
 const std::ostringstream* SJF::getQ() const {
     

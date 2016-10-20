@@ -50,6 +50,7 @@ private:
     
     //Record stats
     int numPreemptions;
+    int numNonIgnoredCS;
     int numContextSwitches;
     std::vector<int> TurnAroundTimes;
     std::map<Process*, int> StartTimes;
@@ -80,6 +81,12 @@ public:
     //for the algorithm with name n. This info
     //is later printed by the printInfo function
     void recordStats(const char *n);
+    
+    //Should be called every time a process
+    //is added to an empty running queue
+    //when the CPU isn't in use. This is used
+    //solely to record information for stats
+    void specialContextSwitch();
     
     //A function used to print the stats collected before
     //Note, this function truncates to two decimal places
