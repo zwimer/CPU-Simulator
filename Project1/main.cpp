@@ -176,34 +176,42 @@ void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse, Algo& 
     delete readyQueue;
 }
 
+//A small helper function that returns the next time
+int smaller(int a, int b) {
+    
+    //If either of the numbers is -1, return the other
+    if (a == -1) return b; else if (b == -1) return a;
+    
+    //Otherwise return the smallest time
+    else return a<b?a:b;
+}
+
 //This functions returns the next time something interesting should occur
-int getNextImportantTime(PList* ToArrive, Algo& A, uint InContextSwitchUntil) {
+int getNextImportantTime(PList* ToArrive, Algo& A, uint InContextSwitchUntil, Process* CPUInUse) {
     
     //Set t to the next time that something important happens
     //This will either be when the algorithim determines
     //that something important will happen, or when a new
     //process arrives which the algorithm needs to know about
-    int Option1 = A.nextNotify();
+    int nextTime = A.nextNotify();
     
     //Ignore the alogirthm until the context switch is done
-    if (t.getTime() < InContextSwitchUntil && Option1 != -1)
-        Option1 = Option1>(int)(t.getTime()+t_cs)/2?Option1:(int)(t.getTime()+t_cs/2);
+    if (t.getTime() < InContextSwitchUntil && nextTime != -1)
+        nextTime = nextTime>(int)(t.getTime()+t_cs)/2?nextTime:(int)(t.getTime()+t_cs/2);
+    
+    //If a process is going to finish before this, note so
+    if (CPUInUse) nextTime = smaller(nextTime, CPUInUse->getFinishCPUTime());
     
     //If a process has yet to arrive
     if (ToArrive->size()) {
         
-        //Option2 is the time the next process arrives.
-        uint Option2 = ToArrive->top()->getTimeArrived();
-        
-        //Pick the smallest positive time
-        if (Option1 == -1) return Option2;
-        else return (uint)Option1<Option2?(uint)Option1:Option2;
+        //Default to the time when the next process arrives
+        nextTime = smaller(nextTime, ToArrive->top()->getTimeArrived());
     }
     
     //If InputIndex==p.size(), no new processes will arrive
-    //If Option1 == -1, and, InputIndex==p.size(), return -1.
-    //If this function returns -1, that means the simulation is over
-    return Option1;
+    //If everything = -1, that means the simulation is over
+    return nextTime;
 }
 
 
@@ -274,7 +282,7 @@ void RunAlgo(PList* ToArrive, Algo& A) {
         }
         
         //Get the next important time
-        t.setTime(getNextImportantTime(ToArrive, A, InContextSwitchUntil));
+        t.setTime(getNextImportantTime(ToArrive, A, InContextSwitchUntil, CPUInUse));
         
         //Delete the finished event
         delete NextAction;
@@ -328,13 +336,13 @@ int main(int argc, const char * argv[]) {
     readIn(argv[1],p);
 
     //Run the FCFS algorithm
-    Simulate(new FCFS, p, "FCFS");
+    //Simulate(new FCFS, p, "FCFS");
     
     //Run the SJF algorithm
     //Simulate(new SJF, p, "SJF");
     
     //Run the RR algorithm
-    //Simulate(new RR, p, "RR");
+    Simulate(new RR, p, "RR");
     
     //Print the Algos' stats
     p->printStats();
