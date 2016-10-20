@@ -310,7 +310,7 @@ inline void Simulate(Algo *A, PList *p, const char* n) {
     
     //Print finishing info
     std::cout << "time " << (t.getLastTime()+t_cs/2)
-    << "ms: Simulator ended for " << n << "\n\n";
+    << "ms: Simulator ended for " << n << "\n";
     
     //Delete the algorithm
     delete A;
@@ -322,6 +322,11 @@ inline void Simulate(Algo *A, PList *p, const char* n) {
 
 //The main function
 int main(int argc, const char * argv[]) {
+    if(argc != 3) {
+        fprintf(stderr, "ERROR: Invalid arguments\n\
+USAGE: ./a.out <input-file> <stats-output-file>\n");
+        return EXIT_FAILURE;
+    }
 
 #ifdef NO_BUFF
     //Disable stdout buffering
@@ -339,13 +344,15 @@ int main(int argc, const char * argv[]) {
     Simulate(new FCFS, p, "FCFS");
     
     //Run the SJF algorithm
+    std::cout << std::endl;
     Simulate(new SJF, p, "SJF");
     
     //Run the RR algorithm
+    std::cout << std::endl;
     Simulate(new RR, p, "RR");
     
-    //Print the Algos' stats
-    p->printStats();
+    //write stats to output stats file
+    p->writeStats(argv[2]);
     
     //Success
     return EXIT_SUCCESS;

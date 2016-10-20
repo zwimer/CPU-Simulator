@@ -1,4 +1,5 @@
 #include "Event.hpp"
+#include<fstream>
 
 
 //Constructor
@@ -147,3 +148,10 @@ Process* PList::top() const { return Q->top(); }
 
 //Q->pop()
 void PList::pop() { Q->pop(); }
+
+void PList::writeStats(const char *file_out) {
+    std::ofstream output;
+    output.open(file_out);
+    output << GatheredStats.str();
+    output.close();
+}

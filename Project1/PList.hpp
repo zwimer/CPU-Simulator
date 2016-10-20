@@ -80,6 +80,9 @@ public:
     //A function used to print the stats collected before
     //Note, this function truncates to two decimal places
     void printStats() const;
+
+    //write them to a file
+    void writeStats(const char *file_out);
     
     
     //-------------------Priority Queue functions-------------------
