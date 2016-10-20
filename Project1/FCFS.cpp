@@ -54,14 +54,11 @@ void FCFS::addProcess(Process *p) { Queued.push_back(p); }
 int FCFS::nextNotify() const {
     
     //If there is nothing to do, return -1
-    if (!Queued.size()) return -1;
+    if (!Queued.size() || ProcessRunning) return -1;
     
     //If no process is running, the next process can
     //start whenever there is not a context swtich occuring
-    else if (!ProcessRunning) return FinishContextSwitch;
-    
-    //If there is a process running, return when it will end
-    return Queued.front()->getFinishCPUTime();
+    return FinishContextSwitch;
 }
 
 //Returns a list of events the computer must do by putting it in V
