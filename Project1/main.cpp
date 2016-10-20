@@ -155,7 +155,7 @@ void ProcessEvent(Event* NextAction, PList* ToArrive, Process*& CPUInUse, Algo& 
         //If we need to have a process begin context swith from the CPU, do so
         case PAUSE_BURST:
             Assert(CPUInUse, "This process was not in the CPU");
-            NextAction->p->PauseCPUBurst(); CPUInUse=0; break;
+            NextAction->p->PauseCPUBurst(); CPUInUse=NULL; break;
             
         //If we need to have a process begin a CPU burst, do so
         case START_BURST:
@@ -310,7 +310,7 @@ inline void Simulate(Algo *A, PList *p, const char* n) {
     
     //Print finishing info
     std::cout << "time " << (t.getLastTime()+t_cs/2)
-    << "ms: Simulator ended for FCFS\n\n";
+    << "ms: Simulator ended for " << n << "\n\n";
     
     //Delete the algorithm
     delete A;
@@ -336,7 +336,7 @@ int main(int argc, const char * argv[]) {
     readIn(argv[1],p);
 
     //Run the FCFS algorithm
-    //Simulate(new FCFS, p, "FCFS");
+    Simulate(new FCFS, p, "FCFS");
     
     //Run the SJF algorithm
     //Simulate(new SJF, p, "SJF");
