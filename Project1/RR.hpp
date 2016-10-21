@@ -11,7 +11,6 @@
 
 //RR algorithm class
 class RR : public Algo {
-
 	private:
 
 		//Representation
@@ -19,6 +18,7 @@ class RR : public Algo {
 		Process* current;
 		std::list<Process*> queue;
 		static const int t_slice = 84;	
+
 	public:
 
 		//Constructor
