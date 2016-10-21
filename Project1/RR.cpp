@@ -34,7 +34,7 @@ Event* RR::getNextAction() {
 	}
 
 	//If the timeslice expired but nothing is running
-	else if (queue.size() == 0 && current != NULL) {
+	if (queue.size() == 0 && current != NULL) {
 		std::cout <<"time " << t.getTime() <<"ms: Time slice expired; "
 		   	<< "no preemption because ready queue is empty [Q empty]" << std::endl;
 		endts = t.getTime() + t_slice;
