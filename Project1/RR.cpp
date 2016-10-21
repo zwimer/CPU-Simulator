@@ -3,18 +3,13 @@
  */
 
 #include "RR.hpp"
-#include <algorithm>
 
-
-RR::RR() : Algo() 
-{
-	current = NULL;
-	endts = 0;
-}
+//Constructor
+RR::RR() : Algo() { current = NULL; endts = 0; }
 
 //Returns true if the ready queue is empty
 bool RR::queueEmpty() const {
-    return !queue.size();
+	return !queue.size();
 }
 
 //Return true if the queue was empty
@@ -22,63 +17,81 @@ void RR::addProcess(Process* p) {
 	queue.push_back(p);
 }
 
-int RR::nextNotify() const
-{
+//Get the time of the next important event
+int RR::nextNotify() const {
 	if (queue.size() == 0 && current == NULL) return -1;
 	return endts;
 }
 
-Event* RR::getNextAction()
-{
-//End of CPU burst
-	if (current != NULL) if (current->getDone() || current->getInIO())
-	{
-		current = NULL;
+//If an important event is happening now, throw the event
+Event* RR::getNextAction() {
+
+	//If the running process just finished
+	if (current != NULL) if (current->getDone() || current->getInIO()) {
 		endts = t.getTime() + t_cs/2;
+		current = NULL;
 		return NULL;
 	}
-//time slice expired w/ empty queue
-	if (queue.size() == 0 && current != NULL)
-	{
-		std::cout <<"time " << t.getTime()
-			<<"ms: Time slice expired; no preemption because ready queue is empty [Q empty]" << std::endl;
+
+	//If the timeslice expired but nothing is running
+	else if (queue.size() == 0 && current != NULL) {
+		std::cout <<"time " << t.getTime() <<"ms: Time slice expired; "
+		   	<< "no preemption because ready queue is empty [Q empty]" << std::endl;
 		endts = t.getTime() + t_slice;
 	}
-//start new burst
-	if (current == NULL)
-	{
+
+	//If a burst should be started
+	else if (current == NULL) {
+
+		//If nothing is in the queue, do nothing
 		if (queue.size() == 0)	return NULL;
-		current = queue.front();
+
+		//Otherwise start the burst
+		current = queue.front(); 
 		queue.pop_front();
 		endts = t.getTime() + t_slice + t_cs/2;
 		return new Event(START_BURST, current);
 	}
-	//pause burst
-	Process* tmp = current;
-	if (t.getTime() >= (int)endts)
-	{
+
+	//If a burst should be preempted
+	if (t.getTime() >= (int)endts) {
+
+		//Add the process to the end of the queue
+		Process* tmp = current;
 		queue.push_back(current);
-		std::cout << "time " << t.getTime() << "ms: Time slice expired; process " << tmp->getProcID() << " preempted with " << (tmp->getFinishCPUTime() -  t.getTime()) << "ms to go " << getQ()->str();
+
+		//Print info
+		std::cout << "time " << t.getTime() << "ms: Time slice expired; process " 
+		<< tmp->getProcID() << " preempted with " 
+		<< (tmp->getFinishCPUTime() -  t.getTime())
+		<< "ms to go " << getQ()->str();
+
+		//Reset the timeslice timer and tell the CPU to preempt
 		current = NULL;
 		endts = t.getTime() + t_cs/2;
 		return new Event(PAUSE_BURST, tmp);
 	}
+
+	//If nothing interesting should happen
 	return NULL;
 }
 
+//Get the current queue as a string
+const std::ostringstream* RR::getQ() const {
 
-const std::ostringstream* RR::getQ() const
-{
+	//Construct the ostringstream
 	std::ostringstream *ret  = new std::ostringstream();
 	*ret << "[Q";
+
+	//For each item on the queue, add it
 	for (std::list<Process*>::const_iterator iter = queue.begin(); iter != queue.end(); ++iter)
-	{
 		*ret <<  " " << (*iter)->getProcID();
-	}
+	
+	//If the queue is empty
 	if (queue.size() == 0)
-	{
 		*ret << " empty";
-	}
+
+	//Finish constructing the string	
 	*ret << "]\n";
 	return ret;
 }
