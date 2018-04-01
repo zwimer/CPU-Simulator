@@ -1,4 +1,4 @@
-# Operating Systems Project 1
+# CPU Simlulator
 
 A fully functional CPU simlulator that runs different scheduling algorithm and compares the results!
 
