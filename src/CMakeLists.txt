@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
-project(Project1)
+project(CPU-Simulator)
 
-add_executable(a.out
+add_executable(CPU-Simulator.out
 	main.cpp
 	Time.cpp
 	PList.cpp
@@ -9,4 +9,3 @@ add_executable(a.out
 	Event.cpp
 	Algo.cpp
 	FCFS.cpp SJF.cpp RR.cpp )
-

@@ -4,7 +4,7 @@ A fully functional CPU simlulator that runs different scheduling algorithm and c
 
 ## Disclaimer
 
-This application was designed with certain specifications, such as the time it takes for a context switch to occur (t_cs) to be greater than 0. Furthermore, it expects that io-time will be greater than t_cs. This application also expects input to be given as follows: Each line not beginning with a # (a comment line character), must either contain only whitespace or must be in the following form: \<proc-num\>|\<burst-time\>|\<num-burst\>|\<io-time\>
+This application was designed with certain specifications, such as the time it takes for a context switch to occur `t_cs` to be greater than 0. Furthermore, it expects that io-time will be greater than `t_cs`. This application also expects input to be given as follows: Each line not beginning with a # (a comment line character), must either contain only whitespace or must be in the following form: `<proc-num> | <burst-time> | <num-burst> | <io-time>`
 
 ## Requirements
 
@@ -21,12 +21,12 @@ git clone https://github.com/zwimer/CPU-Simulator
 
 Create your build directory as follows
 ```bash
-mkdir CPU-Simulator/build && cd CPU-Simulator/build/
+mkdir CPU-Simulator/src/build && cd CPU-Simulator/src/build/
 ```
 
 After that run qmake and make with the command below
 ```bash
-cmake ../Project1 && make
+cmake .. && make
 ```
 
 ## Usage
