@@ -26,7 +26,7 @@ mkdir CPU-Simulator/build && cd CPU-Simulator/build/
 
 After that run qmake and make with the command below
 ```bash
-cmake ../Project1 && make
+cmake .. && make
 ```
 
 ## Usage
