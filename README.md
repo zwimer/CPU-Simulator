@@ -16,12 +16,12 @@ First, cd into the directory you would like to install this application in
 
 Then git clone this repository
 ```bash
-git clone https://github.com/zwimer/OpSysProject1
+git clone https://github.com/zwimer/CPU-Simulator
 ```
 
 Create your build directory as follows
 ```bash
-mkdir OpSysProject1/build && cd OpSysProject1/build/
+mkdir CPU-Simulator/build && cd CPU-Simulator/build/
 ```
 
 After that run qmake and make with the command below
